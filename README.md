@@ -1,7 +1,4 @@
 # cm2py
-<<<<<<< HEAD
-Circuit Maker 2 save generation and manipulation package
-=======
 
 cm2py is a Python package for generating and manipulating save strings for the roblox game [Circuit Maker 2](https://www.roblox.com/games/6652606416/Circuit-Maker-2).
 
@@ -44,4 +41,3 @@ Please make sure to update tests as appropriate.
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
->>>>>>> Initial commit
