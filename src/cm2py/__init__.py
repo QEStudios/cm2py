@@ -1,4 +1,4 @@
-# Pre-defined blockId definitions"""
+# Pre-defined blockId definitions
 NOR = 0
 AND = 1
 OR = 2
@@ -8,3 +8,5 @@ FLIPFLOP = 5
 LED = 6
 MUSIC = 7
 CLOCK = 8
+
+from .cm2py import *

@@ -16,5 +16,5 @@ for r in range(resolution//2):
         z = (math.sin(r/(resolution/(math.pi*2))))*radius * math.sin(i/(resolution/(math.pi*2)))
         save.addBlock(block, (x,y,z))
 
-saveString = save.export()
+saveString = save.exportString()
 print(saveString)

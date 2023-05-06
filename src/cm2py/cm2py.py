@@ -26,8 +26,7 @@ __email__ =  "qestudios17@example.com"
 __license__ = "GPLv3"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.0.2"
-
+__version__ = "0.0.3"
 
 from uuid import UUID, uuid4
 
@@ -40,15 +39,15 @@ class save:
     def addBlock(self, blockId, pos, state=False, snapToGrid=True):
         """Add a block to the save."""
         if snapToGrid:
-            newBlock = Block(blockId, tuple(map(lambda x: round(x), pos)), state)
+            newBlock = block(blockId, tuple(map(lambda x: round(x), pos)), state)
         else:
-            newBlock = Block(blockId, pos, state)
+            newBlock = block(blockId, pos, state)
         self.blocks.append(newBlock)
         return newBlock
 
     def addConnection(self, source, target):
         """Add a connection to the save."""
-        newConnection = Connection(source, target)
+        newConnection = connection(source, target)
         if str(newConnection.target.uuid) in self.connections:
             self.connections[str(newConnection.target.uuid)].append(newConnection)
         else:
@@ -85,8 +84,8 @@ class block:
 class connection:
 
     def __init__(self, source, target):
-        assert isinstance(source, Block) or isinstance(source, UUID), "source must be a Block object, or a UUID"
-        assert isinstance(target, Block) or isinstance(source, UUID), "target must be a Block object, or a UUID"
+        assert isinstance(source, block) or isinstance(source, UUID), "source must be a Block object, or a UUID"
+        assert isinstance(target, block) or isinstance(source, UUID), "target must be a Block object, or a UUID"
         self.source = source
         self.target = target
 
