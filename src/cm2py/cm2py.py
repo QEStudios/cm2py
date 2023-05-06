@@ -26,7 +26,7 @@ __email__ =  "qestudios17@example.com"
 __license__ = "GPLv3"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 from uuid import UUID, uuid4
