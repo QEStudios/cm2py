@@ -31,19 +31,6 @@ __version__ = "0.0.1"
 
 from uuid import UUID, uuid4
 
-
-
-# Pre-defined blockId definitions"""
-NOR = 0
-AND = 1
-OR = 2
-XOR = 3
-BUTTON = 4
-FLIPFLOP = 5
-LED = 6
-MUSIC = 7
-CLOCK = 8
-
 class save:
     
     def __init__(self):
