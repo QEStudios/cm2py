@@ -20,4 +20,5 @@ for i in range(length):
     # connections.append(save.addConnection(blocks[i-1], blocks[i]))
     save.addConnection(blocks[i-1], blocks[i])  # Directly add the connections to the save object
 
-print(save.exportSave())
+saveString = save.exportSave()
+print(saveString)
