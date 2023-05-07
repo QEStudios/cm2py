@@ -32,9 +32,10 @@ for i in range(8):
     # connections.append(save.addConnection(blocks[i-1], blocks[i]))
     save.addConnection(blocks[i-1], blocks[i])  # Directly add the connections to the save object
 
-save.exportSave()
+print(save.exportSave())
 
 ```
+(from [the loop.py example](examples/loop.py))
 
 ## Contributing
 
