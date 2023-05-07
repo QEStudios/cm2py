@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # This code generates a sphere with a specified radius, resolution, and block type.
 
 import cm2py as cm2

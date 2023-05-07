@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """ Circuit Maker 2 save generation and manipulation package
 
 This module contains utilities to generate and manipulate save strings
@@ -88,11 +88,3 @@ class connection:
         assert isinstance(target, block) or isinstance(source, UUID), "target must be a Block object, or a UUID"
         self.source = source
         self.target = target
-
-def importSave(string):
-    """Import a Circuit Maker 2 save string as a save."""
-    regex = r'^((\d+,){2}(-?\d+,){3}(|((\d+)|(\d+\+){2}(\d+)));)+((\d+,){2}(-?\d+,){3}(|((\d+)|(\d+\+){2}(\d+)))\?)(|(([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*))))$'
-    if not re.match(regex, string):
-        raise ValueError("Invalid save string")
-
-    # TODO
