@@ -78,9 +78,9 @@ class connection:
         self.source = source
         self.target = target
 
-def importSave(string):
+def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
-    # regex = r'^((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+)))?;)+((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+))?)\?)((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*)))?)$'
+    # Full combined regex: r'^((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+)))?;)+((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+))?)\?)((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*)))?)$'
     regex = (
         # Match all blocks
         r'^((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+)))?;)+'
@@ -91,4 +91,16 @@ def importSave(string):
 
     assert re.match(regex, string), "Invalid save string"
 
-    # TODO
+    newSave = save()
+
+    blocks = [[int(v) if v else None for v in i.split(",")] for i in "".join(string.split("?")[0]).split(";")]
+    connections = [[int(v) for v in i.split(",")] for i in "".join(string.split("?")[1]).split(";") if len("".join(string.split("?")[1]).split(";")) > 1 and isinstance("".join(string.split("?")[1]).split(";")[0], int) and isinstance("".join(string.split("?")[1]).split(";")[0], int)]
+    # Need to refactor this line
+
+    for block in blocks:
+        newSave.addBlock(block[0], (block[2], block[3], block[4]), state=bool(block[1]), snapToGrid=snapToGrid)
+    
+    for connection in connections:
+        newSave.addConnection(blocks[connection[0]-1], blocks[connection[1]-1])
+
+    return newSave
