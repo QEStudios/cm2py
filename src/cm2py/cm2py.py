@@ -28,6 +28,7 @@ __maintainer__ = "SKM GEEK"
 __status__ = "Production"
 __version__ = "0.0.3"
 
+import re
 from uuid import UUID, uuid4
 
 class save:
@@ -91,8 +92,15 @@ class connection:
 
 def importSave(string):
     """Import a Circuit Maker 2 save string as a save."""
-    regex = r'^((\d+,){2}(-?\d+,){3}(|((\d+)|(\d+\+){2}(\d+)));)+((\d+,){2}(-?\d+,){3}(|((\d+)|(\d+\+){2}(\d+)))\?)(|(([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*))))$'
-    if not re.match(regex, string):
-        raise ValueError("Invalid save string")
+    # regex = r'^((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+)))?;)+((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+))?)\?)((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*)))?)$'
+    regex = (
+        # Match all blocks
+        r'^((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+)))?;)+'
+        r'((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+))?)\?)'
+        # Match all connections
+        r'((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*)))?)$'
+    )
+
+    assert re.match(regex, string), "Invalid save string"
 
     # TODO
