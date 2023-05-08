@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Pre-defined blockId definitions
 NOR = 0
 AND = 1

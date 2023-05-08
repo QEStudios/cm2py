@@ -1,20 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """ Circuit Maker 2 save generation and manipulation package
 
 This module contains utilities to generate and manipulate save strings
 for the Roblox game Circuit Maker 2 by ismellbeef1.
-
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with
-this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 __author__ = "SKM GEEK"
@@ -23,11 +11,12 @@ __copyright__ = "Copyright 2023, SKM GEEK"
 __date__ = "2023/04/29"
 __deprecated__ = False
 __email__ =  "qestudios17@example.com"
-__license__ = "GPLv3"
+__license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
 __version__ = "0.0.3"
 
+import re
 from uuid import UUID, uuid4
 
 class save:
@@ -89,10 +78,29 @@ class connection:
         self.source = source
         self.target = target
 
-def importSave(string):
+def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
-    regex = r'^((\d+,){2}(-?\d+,){3}(|((\d+)|(\d+\+){2}(\d+)));)+((\d+,){2}(-?\d+,){3}(|((\d+)|(\d+\+){2}(\d+)))\?)(|(([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*))))$'
-    if not re.match(regex, string):
-        raise ValueError("Invalid save string")
+    # Full combined regex: r'^((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+)))?;)+((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+))?)\?)((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*)))?)$'
+    regex = (
+        # Match all blocks
+        r'^((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+)))?;)+'
+        r'((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+))?)\?)'
+        # Match all connections
+        r'((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*)))?)$'
+    )
 
-    # TODO
+    assert re.match(regex, string), "Invalid save string"
+
+    newSave = save()
+
+    blocks = [[int(v) if v else None for v in i.split(",")] for i in "".join(string.split("?")[0]).split(";")]
+    connections = [[int(v) for v in i.split(",")] for i in "".join(string.split("?")[1]).split(";") if len("".join(string.split("?")[1]).split(";")) > 1 and isinstance("".join(string.split("?")[1]).split(";")[0], int) and isinstance("".join(string.split("?")[1]).split(";")[0], int)]
+    # Need to refactor this line
+
+    for block in blocks:
+        newSave.addBlock(block[0], (block[2], block[3], block[4]), state=bool(block[1]), snapToGrid=snapToGrid)
+    
+    for connection in connections:
+        newSave.addConnection(blocks[connection[0]-1], blocks[connection[1]-1])
+
+    return newSave
