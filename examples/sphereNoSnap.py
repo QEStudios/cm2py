@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # This code generates a sphere with a specified radius, resolution, and block type.
 # The blocks are not snapped to the grid, creating a smoother sphere.
 
