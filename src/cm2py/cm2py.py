@@ -16,6 +16,7 @@ __maintainer__ = "SKM GEEK"
 __status__ = "Production"
 __version__ = "0.0.3"
 
+import re
 from uuid import UUID, uuid4
 
 class save:
@@ -76,3 +77,18 @@ class connection:
         assert isinstance(target, block) or isinstance(source, UUID), "target must be a Block object, or a UUID"
         self.source = source
         self.target = target
+
+def importSave(string):
+    """Import a Circuit Maker 2 save string as a save."""
+    # regex = r'^((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+)))?;)+((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+))?)\?)((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*)))?)$'
+    regex = (
+        # Match all blocks
+        r'^((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+)))?;)+'
+        r'((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+))?)\?)'
+        # Match all connections
+        r'((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*)))?)$'
+    )
+
+    assert re.match(regex, string), "Invalid save string"
+
+    # TODO
