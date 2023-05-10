@@ -18,9 +18,12 @@ __version__ = "0.0.3"
 
 import re
 from uuid import UUID, uuid4
+import numpy as np
 
 
-class save:
+class Save:
+    """A class to represent a save, which can be modified."""
+
     def __init__(self):
         self.blocks = []
         self.connections = {}
@@ -28,15 +31,15 @@ class save:
     def addBlock(self, blockId, pos, state=False, snapToGrid=True):
         """Add a block to the save."""
         if snapToGrid:
-            newBlock = block(blockId, tuple(map(lambda x: round(x), pos)), state)
+            newBlock = Block(blockId, tuple(np.floor(pos)), state)
         else:
-            newBlock = block(blockId, pos, state)
+            newBlock = Block(blockId, pos, state)
         self.blocks.append(newBlock)
         return newBlock
 
     def addConnection(self, source, target):
         """Add a connection to the save."""
-        newConnection = connection(source, target)
+        newConnection = Connection(source, target)
         if str(newConnection.target.uuid) in self.connections:
             self.connections[str(newConnection.target.uuid)].append(newConnection)
         else:
@@ -62,9 +65,11 @@ class save:
         return saveString
 
 
-class block:
+class Block:
     def __init__(self, blockId, pos, state=False):
-        assert isinstance(blockId, int) and 0 <= blockId <= 11, "blockId must be an integer between 0 and 11"
+        assert (
+            isinstance(blockId, int) and 0 <= blockId <= 11
+        ), "blockId must be an integer between 0 and 11"
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
@@ -74,18 +79,22 @@ class block:
         ), "pos must be a 3d tuple of integers"
         assert isinstance(state, bool), "state must be a boolean"
         self.blockId = blockId
-        self.pos = tuple([round(pos[i], 2) for i in range(3)])
-        self.x = round(pos[0], 2)
-        self.y = round(pos[1], 2)
-        self.z = round(pos[2], 2)
+        self.pos = tuple(np.round(pos))
+        self.x = self.pos[0]
+        self.y = self.pos[1]
+        self.z = self.pos[2]
         self.state = state
         self.uuid = uuid4()
 
 
-class connection:
+class Connection:
     def __init__(self, source, target):
-        assert isinstance(source, block) or isinstance(source, UUID), "source must be a Block object, or a UUID"
-        assert isinstance(target, block) or isinstance(source, UUID), "target must be a Block object, or a UUID"
+        assert isinstance(source, Block) or isinstance(
+            source, UUID
+        ), "source must be a block object, or a UUID"
+        assert isinstance(target, Block) or isinstance(
+            source, UUID
+        ), "target must be a block object, or a UUID"
         self.source = source
         self.target = target
 
@@ -97,14 +106,18 @@ def importSave(string, snapToGrid=True):
         r"^((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+)))?;)+"
         r"((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+))?)\?)"
         # Match all connections
-        r"((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+([1-9][0-9]*),([1-9][0-9]*)))?)$"
+        r"((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+"
+        r"([1-9][0-9]*),([1-9][0-9]*)))?)$"
     )
 
     assert re.match(regex, string), "Invalid save string"
 
-    newSave = save()
+    newSave = Save()
 
-    blocks = [[int(v) if v else None for v in i.split(",")] for i in "".join(string.split("?")[0]).split(";")]
+    blocks = [
+        [int(v) if v else None for v in i.split(",")]
+        for i in "".join(string.split("?")[0]).split(";")
+    ]
     connections = [
         [int(v) for v in i.split(",")]
         for i in "".join(string.split("?")[1]).split(";")
@@ -114,10 +127,12 @@ def importSave(string, snapToGrid=True):
     ]
     # Need to refactor this line
 
-    for block in blocks:
-        newSave.addBlock(block[0], (block[2], block[3], block[4]), state=bool(block[1]), snapToGrid=snapToGrid)
+    for b in blocks:
+        newSave.addBlock(
+            b[0], (b[2], b[3], b[4]), state=bool(b[1]), snapToGrid=snapToGrid
+        )
 
-    for connection in connections:
-        newSave.addConnection(blocks[connection[0] - 1], blocks[connection[1] - 1])
+    for c in connections:
+        newSave.addConnection(blocks[c[0] - 1], blocks[c[1] - 1])
 
     return newSave
