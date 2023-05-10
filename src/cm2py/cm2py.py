@@ -63,6 +63,10 @@ class Save:
                 )
         saveString += ";".join(connectionStrings)
         return saveString
+    
+    def deleteBlock(self, blockId):
+        """Delete a block from the save."""
+        return
 
 
 class Block:
