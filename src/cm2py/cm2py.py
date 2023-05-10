@@ -63,9 +63,10 @@ class Save:
                 )
         saveString += ";".join(connectionStrings)
         return saveString
-    
-    def deleteBlock(self, blockId):
+
+    def deleteBlock(self, blockRef):
         """Delete a block from the save."""
+        assert isinstance(blockRef, Block), "blockRef must be a block object"
         return
 
 
