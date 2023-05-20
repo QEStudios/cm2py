@@ -67,9 +67,7 @@ class Save:
 
 class Block:
     def __init__(self, blockId, pos, state=False):
-        assert (
-            isinstance(blockId, int) and 0 <= blockId <= 11
-        ), "blockId must be an integer between 0 and 11"
+        assert isinstance(blockId, int) and 0 <= blockId <= 11, "blockId must be an integer between 0 and 11"
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
@@ -89,12 +87,8 @@ class Block:
 
 class Connection:
     def __init__(self, source, target):
-        assert isinstance(source, Block) or isinstance(
-            source, UUID
-        ), "source must be a block object, or a UUID"
-        assert isinstance(target, Block) or isinstance(
-            source, UUID
-        ), "target must be a block object, or a UUID"
+        assert isinstance(source, Block) or isinstance(source, UUID), "source must be a block object, or a UUID"
+        assert isinstance(target, Block) or isinstance(source, UUID), "target must be a block object, or a UUID"
         self.source = source
         self.target = target
 
@@ -114,10 +108,7 @@ def importSave(string, snapToGrid=True):
 
     newSave = Save()
 
-    blocks = [
-        [int(v) if v else None for v in i.split(",")]
-        for i in "".join(string.split("?")[0]).split(";")
-    ]
+    blocks = [[int(v) if v else None for v in i.split(",")] for i in "".join(string.split("?")[0]).split(";")]
     connections = [
         [int(v) for v in i.split(",")]
         for i in "".join(string.split("?")[1]).split(";")
@@ -128,9 +119,7 @@ def importSave(string, snapToGrid=True):
     # Need to refactor this line
 
     for b in blocks:
-        newSave.addBlock(
-            b[0], (b[2], b[3], b[4]), state=bool(b[1]), snapToGrid=snapToGrid
-        )
+        newSave.addBlock(b[0], (b[2], b[3], b[4]), state=bool(b[1]), snapToGrid=snapToGrid)
 
     for c in connections:
         newSave.addConnection(blocks[c[0] - 1], blocks[c[1] - 1])
