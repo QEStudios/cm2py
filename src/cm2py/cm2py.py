@@ -61,7 +61,7 @@ class Save:
                         f"{[str(b.uuid) for b in self.blocks].index(str(n.target.uuid))+1}"
                     )
                 )
-        saveString += ";".join(connectionStrings)
+        saveString += ";".join(connectionStrings) + "?"
         return saveString
 
 
@@ -101,7 +101,9 @@ def importSave(string, snapToGrid=True):
         r"((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+))?)\?)"
         # Match all connections
         r"((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+"
-        r"([1-9][0-9]*),([1-9][0-9]*)))?)$"
+        r"([1-9][0-9]*),([1-9][0-9]*)))?\?)"
+        # Match custom build syntax
+        r"((\w+(,(-?\d+(\+-?\d+)*)*)+)(;(\w+(,(-?\d+(\+-?\d+)*)*)+))*)*$"
     )
 
     assert re.match(regex, string), "Invalid save string"
