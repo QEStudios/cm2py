@@ -106,7 +106,7 @@ def importSave(string, snapToGrid=True):
         r"((\w+(,(-?\d+(\+-?\d+)*)*)+)(;(\w+(,(-?\d+(\+-?\d+)*)*)+))*)*$"
     )
 
-    assert re.match(regex, string), "Invalid save string"
+    assert re.match(regex, string), "invalid save string"
 
     newSave = Save()
 
