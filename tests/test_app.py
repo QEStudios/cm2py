@@ -57,3 +57,16 @@ def test_deleteBlock2():
     save.deleteBlock(b2)
 
     save.exportSave()
+
+
+def test_deleteConnection():
+    save = cm2.Save()
+
+    b1 = save.addBlock(cm2.OR, (0, 0, 0))
+    b2 = save.addBlock(cm2.OR, (2, 0, 0))
+
+    c1 = save.addConnection(b1, b2)
+
+    save.deleteConnection(c1)
+
+    save.exportSave()

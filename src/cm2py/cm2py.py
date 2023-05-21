@@ -76,6 +76,15 @@ class Save:
         del self.blocks[self.blocks.index(blockRef)]
         return
 
+    def deleteConnection(self, connectionRef):
+        """Delete a connection from the save."""
+        assert isinstance(connectionRef, Connection), "connectionRef must be a Connection object"
+        assert connectionRef in (n for c in self.connections.values() for n in c)
+        for c in self.connections.values():
+            for n in c:
+                if connectionRef == n:
+                    del self.connections[str(n.target.uuid)][self.connections[str(n.target.uuid)].index(n)]
+
 
 class Block:
     def __init__(self, blockId, pos, state=False):
