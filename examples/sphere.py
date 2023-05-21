@@ -8,7 +8,7 @@ radius = 10  # Radius of the sphere
 resolution = 20  # Number of divisions of the cube to generate
 block = cm2.OR  # Block ID to be used
 
-save = cm2.save()
+save = cm2.Save()
 
 for r in range(resolution // 2):
     for i in range(resolution):
