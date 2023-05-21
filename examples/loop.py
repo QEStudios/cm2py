@@ -12,13 +12,13 @@ blocks = []
 for i in range(length):
     blocks.append(save.addBlock(cm2.OR, (i, 0, 0)))
 
-### Commented out for clarity. 
+### Commented out for clarity.
 ### You should store connections in a list if you want to modify them later.
-# connections = []  
+# connections = []
 
 for i in range(length):
     # connections.append(save.addConnection(blocks[i-1], blocks[i]))
-    save.addConnection(blocks[i-1], blocks[i])  # Directly add the connections to the save object
+    save.addConnection(blocks[i - 1], blocks[i])  # Directly add the connections to the save object
 
 saveString = save.exportSave()
 print(saveString)

@@ -7,7 +7,10 @@ XOR = 3
 BUTTON = 4
 FLIPFLOP = 5
 LED = 6
-MUSIC = 7
-CLOCK = 8
+SOUND = 7
+CONDUCTOR = 8
+CUSTOM = 9
+XAND = 10
+XNOR = 11
 
 from .cm2py import *
