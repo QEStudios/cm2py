@@ -14,7 +14,7 @@ def test_addBlocks():
     save.addBlock(cm2.FLIPFLOP, (5, 0, 0))
     save.addBlock(cm2.LED, (6, 0, 0))
     save.addBlock(cm2.SOUND, (7, 0, 0))
-    save.addBlock(cm2.CLOCK, (8, 0, 0))
+    save.addBlock(cm2.CONDUCTOR, (8, 0, 0))
     save.addBlock(cm2.CUSTOM, (9, 0, 0))
     save.addBlock(cm2.XNOR, (10, 0, 0))
 
