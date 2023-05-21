@@ -87,8 +87,8 @@ class Block:
 
 class Connection:
     def __init__(self, source, target):
-        assert isinstance(source, Block) or isinstance(source, UUID), "source must be a block object, or a UUID"
-        assert isinstance(target, Block) or isinstance(source, UUID), "target must be a block object, or a UUID"
+        assert isinstance(source, Block), "source must be a block object"
+        assert isinstance(target, Block), "target must be a block object"
         self.source = source
         self.target = target
 
