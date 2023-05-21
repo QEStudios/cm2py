@@ -66,7 +66,7 @@ class Save:
 
     def deleteBlock(self, blockRef):
         """Delete a block from the save."""
-        assert isinstance(blockRef, Block), "blockRef must be a block object"
+        assert isinstance(blockRef, Block), "blockRef must be a Block object"
         assert blockRef in self.blocks, "block does not exist in save"
         for c in self.connections.values():
             for n in c:
@@ -99,8 +99,8 @@ class Block:
 
 class Connection:
     def __init__(self, source, target):
-        assert isinstance(source, Block), "source must be a block object"
-        assert isinstance(target, Block), "target must be a block object"
+        assert isinstance(source, Block), "source must be a Block object"
+        assert isinstance(target, Block), "target must be a Block object"
         self.source = source
         self.target = target
 
