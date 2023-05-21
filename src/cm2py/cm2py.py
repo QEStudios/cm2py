@@ -64,6 +64,18 @@ class Save:
         saveString += ";".join(connectionStrings) + "?"
         return saveString
 
+    def deleteBlock(self, blockRef):
+        """Delete a block from the save."""
+        assert isinstance(blockRef, Block), "blockRef must be a block object"
+        assert blockRef in self.blocks, "block does not exist in save"
+        for c in self.connections.values():
+            for n in c:
+                if n.source.uuid == blockRef.uuid or n.target.uuid == blockRef.uuid:
+                    del self.connections[str(n.target.uuid)][self.connections[str(n.target.uuid)].index(n)]
+                    break
+        del self.blocks[self.blocks.index(blockRef)]
+        return
+
 
 class Block:
     def __init__(self, blockId, pos, state=False):
