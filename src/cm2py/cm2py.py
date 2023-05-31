@@ -18,7 +18,6 @@ __version__ = "0.1.0"
 
 import re
 from uuid import UUID, uuid4
-from aiohttp import request
 import numpy as np
 
 
