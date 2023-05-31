@@ -70,3 +70,11 @@ def test_deleteConnection():
     save.deleteConnection(c1)
 
     save.exportSave()
+
+
+def test_properties():
+    save = cm2.Save()
+
+    b1 = save.addBlock(cm2.LED, (0, 0, 0), properties=[255, 0, 0])
+
+    save.exportSave()

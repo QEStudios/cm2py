@@ -28,12 +28,12 @@ class Save:
         self.blocks = []
         self.connections = {}
 
-    def addBlock(self, blockId, pos, state=False, snapToGrid=True):
+    def addBlock(self, blockId, pos, state=False, properties=None, snapToGrid=True):
         """Add a block to the save."""
         if snapToGrid:
-            newBlock = Block(blockId, tuple(np.floor(pos)), state)
+            newBlock = Block(blockId, tuple(np.floor(pos)), state=state, properties=properties)
         else:
-            newBlock = Block(blockId, pos, state)
+            newBlock = Block(blockId, pos, state=state, properties=properties)
         self.blocks.append(newBlock)
         return newBlock
 
@@ -50,7 +50,8 @@ class Save:
         """Export the save to a Circuit Maker 2 save string."""
         blockStrings = []
         for b in self.blocks:
-            blockStrings.append(f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},")
+            p = "+".join(str(v) for v in b.properties) if b.properties else ""
+            blockStrings.append(f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z}," + p)
         saveString = ";".join(blockStrings) + "?"
         connectionStrings = []
         for c in self.connections.values():
@@ -87,7 +88,7 @@ class Save:
 
 
 class Block:
-    def __init__(self, blockId, pos, state=False):
+    def __init__(self, blockId, pos, state=False, properties=None):
         assert isinstance(blockId, int) and 0 <= blockId <= 11, "blockId must be an integer between 0 and 11"
         assert (
             isinstance(pos, tuple)
@@ -97,12 +98,14 @@ class Block:
             and (isinstance(pos[2], float) or isinstance(pos[2], int))
         ), "pos must be a 3d tuple of integers"
         assert isinstance(state, bool), "state must be a boolean"
+        assert isinstance(properties, list) or properties == None, "properties must be a list of numbers, or None"
         self.blockId = blockId
         self.pos = tuple(np.round(pos))
         self.x = self.pos[0]
         self.y = self.pos[1]
         self.z = self.pos[2]
         self.state = state
+        self.properties = properties
         self.uuid = uuid4()
 
 
@@ -131,7 +134,10 @@ def importSave(string, snapToGrid=True):
 
     newSave = Save()
 
-    blocks = [[int(v) if v else None for v in i.split(",")] for i in "".join(string.split("?")[0]).split(";")]
+    blocks = [
+        [[int(a) for a in v] if "+" in v else int(v) if v else None for v in i.split(",")]
+        for i in "".join(string.split("?")[0]).split(";")
+    ]
     connections = [
         [int(v) for v in i.split(",")]
         for i in "".join(string.split("?")[1]).split(";")
@@ -139,10 +145,10 @@ def importSave(string, snapToGrid=True):
         and isinstance("".join(string.split("?")[1]).split(";")[0], int)
         and isinstance("".join(string.split("?")[1]).split(";")[0], int)
     ]
-    # Need to refactor this line
+    # Need to refactor these lines
 
     for b in blocks:
-        newSave.addBlock(b[0], (b[2], b[3], b[4]), state=bool(b[1]), snapToGrid=snapToGrid)
+        newSave.addBlock(b[0], (b[2], b[3], b[4]), state=bool(b[1]), properties=b[5], snapToGrid=snapToGrid)
 
     for c in connections:
         newSave.addConnection(blocks[c[0] - 1], blocks[c[1] - 1])
