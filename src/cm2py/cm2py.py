@@ -100,7 +100,7 @@ class Block:
         assert isinstance(state, bool), "state must be a boolean"
         assert isinstance(properties, list) or properties == None, "properties must be a list of numbers, or None"
         self.blockId = blockId
-        self.pos = tuple(np.round(pos))
+        self.pos = pos
         self.x = self.pos[0]
         self.y = self.pos[1]
         self.z = self.pos[2]
