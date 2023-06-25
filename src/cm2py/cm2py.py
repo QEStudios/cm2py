@@ -14,7 +14,7 @@ __email__ = "qestudios17@example.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.1.0"
+__version__ = "0.2.1"
 
 import re
 from uuid import UUID, uuid4
@@ -100,7 +100,7 @@ class Block:
         assert isinstance(state, bool), "state must be a boolean"
         assert isinstance(properties, list) or properties == None, "properties must be a list of numbers, or None"
         self.blockId = blockId
-        self.pos = tuple(np.round(pos))
+        self.pos = pos
         self.x = self.pos[0]
         self.y = self.pos[1]
         self.z = self.pos[2]
