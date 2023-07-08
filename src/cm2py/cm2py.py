@@ -14,11 +14,11 @@ __email__ = "qestudios17@example.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 import re
 from uuid import UUID, uuid4
-import numpy as np
+import math
 
 
 class Save:
@@ -31,7 +31,7 @@ class Save:
     def addBlock(self, blockId, pos, state=False, properties=None, snapToGrid=True):
         """Add a block to the save."""
         if snapToGrid:
-            newBlock = Block(blockId, tuple(np.floor(pos)), state=state, properties=properties)
+            newBlock = Block(blockId, tuple([int(math.floor(i)) for i in pos]), state=state, properties=properties)
         else:
             newBlock = Block(blockId, pos, state=state, properties=properties)
         self.blocks.append(newBlock)
