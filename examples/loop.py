@@ -5,7 +5,7 @@ import cm2py as cm2
 
 length = 8
 
-save = cm2.save()
+save = cm2.Save()
 
 blocks = []
 

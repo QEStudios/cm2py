@@ -14,11 +14,11 @@ __email__ = "qestudios17@example.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.2.1"
+__version__ = "0.2.5"
 
 import re
 from uuid import UUID, uuid4
-import numpy as np
+import math
 
 
 class Save:
@@ -31,7 +31,7 @@ class Save:
     def addBlock(self, blockId, pos, state=False, properties=None, snapToGrid=True):
         """Add a block to the save."""
         if snapToGrid:
-            newBlock = Block(blockId, tuple(np.floor(pos)), state=state, properties=properties)
+            newBlock = Block(blockId, tuple([int(math.floor(i)) for i in pos]), state=state, properties=properties)
         else:
             newBlock = Block(blockId, pos, state=state, properties=properties)
         self.blocks.append(newBlock)
@@ -121,13 +121,15 @@ def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
     regex = (
         # Match all blocks
-        r"^((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+)))?;)+"
-        r"((\d+,){2}(-?\d+,){3}(((\d+)|(\d+\+){2}(\d+))?)\?)"
+        r"^((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?;)+"
+        r"((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?\?)"
         # Match all connections
         r"((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+"
         r"([1-9][0-9]*),([1-9][0-9]*)))?\?)"
         # Match custom build syntax
-        r"((\w+(,(-?\d+(\+-?\d+)*)*)+)(;(\w+(,(-?\d+(\+-?\d+)*)*)+))*)*$"
+        r"((\w+(,(-?\d+(\.\d+)?(\+-?\d+(\.\d+)?)*)*)+)(;(\w+(,(-?\d+(\.\d+)?(\+-?\d+(\.\d+)?)*)*)+))*)*\?"
+        # Match sign data
+        r"[0-9a-f]*(;[0-9a-fA-F]*)*$"
     )
 
     assert re.match(regex, string), "invalid save string"
