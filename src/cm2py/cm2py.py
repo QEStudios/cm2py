@@ -14,7 +14,7 @@ __email__ = "qestudios17@example.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.2.5"
+__version__ = "0.2.6"
 
 import re
 from uuid import UUID, uuid4
@@ -48,22 +48,21 @@ class Save:
 
     def exportSave(self):
         """Export the save to a Circuit Maker 2 save string."""
-        blockStrings = []
+        string = ""
         for b in self.blocks:
-            p = "+".join(str(v) for v in b.properties) if b.properties else ""
-            blockStrings.append(f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z}," + p)
-        saveString = ";".join(blockStrings) + "?"
-        connectionStrings = []
+            if b.properties:
+                p = "+".join(str(v) for v in b.properties)
+                string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},{p};"
+            else:
+                string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},;"
+
+        string = string[:-1] + "?"
+        blockUuids = [str(b.uuid) for b in self.blocks]
         for c in self.connections.values():
             for n in c:
-                connectionStrings.append(
-                    (
-                        f"{[str(b.uuid) for b in self.blocks].index(str(n.source.uuid))+1},"
-                        f"{[str(b.uuid) for b in self.blocks].index(str(n.target.uuid))+1}"
-                    )
-                )
-        saveString += ";".join(connectionStrings) + "?"
-        return saveString
+                string += f"{blockUuids.index(str(n.source.uuid))+1},{blockUuids.index(str(n.target.uuid))+1};"
+        string = string[:-1] + "??"  # TODO: Custom build support & sign data support
+        return string
 
     def deleteBlock(self, blockRef):
         """Delete a block from the save."""
@@ -137,7 +136,10 @@ def importSave(string, snapToGrid=True):
     newSave = Save()
 
     blocks = [
-        [[int(a) for a in v] if "+" in v else int(v) if v else None for v in i.split(",")]
+        [
+            [float(a) for a in v] if "+" in v else float(v) if (v and p != 0) else int(v) if p == 0 else None
+            for p, v in enumerate(i.split(","))
+        ]
         for i in "".join(string.split("?")[0]).split(";")
     ]
     connections = [
