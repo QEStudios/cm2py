@@ -137,7 +137,7 @@ def importSave(string, snapToGrid=True):
 
     blocks = [
         [
-            [float(a) for a in v] if "+" in v else float(v) if (v and p != 0) else int(v) if p == 0 else None
+            [float(a) for a in v.split("+")] if "+" in v else float(v) if (v and p != 0) else int(v) if p == 0 else None
             for p, v in enumerate(i.split(","))
         ]
         for i in "".join(string.split("?")[0]).split(";")
