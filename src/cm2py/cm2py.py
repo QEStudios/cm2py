@@ -88,7 +88,7 @@ class Save:
 
 class Block:
     def __init__(self, blockId, pos, state=False, properties=None):
-        assert isinstance(blockId, int) and 0 <= blockId <= 11, "blockId must be an integer between 0 and 11"
+        assert isinstance(blockId, int) and 0 <= blockId <= 13, "blockId must be an integer between 0 and 11"
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
@@ -97,7 +97,7 @@ class Block:
             and (isinstance(pos[2], float) or isinstance(pos[2], int))
         ), "pos must be a 3d tuple of integers"
         assert isinstance(state, bool), "state must be a boolean"
-        assert isinstance(properties, list) or properties == None, "properties must be a list of numbers, or None"
+        assert isinstance(properties, list) or properties == None, "properties must be a list of numbers, or None."
         self.blockId = blockId
         self.pos = pos
         self.x = self.pos[0]
@@ -120,7 +120,7 @@ def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
     regex = (
         # Match all blocks
-        r"^((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?;)+"
+        r"^((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?;)*"
         r"((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?\?)"
         # Match all connections
         r"((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+"
@@ -137,7 +137,13 @@ def importSave(string, snapToGrid=True):
 
     blocks = [
         [
-            [float(a) for a in v.split("+")] if "+" in v else float(v) if (v and p != 0) else int(v) if p == 0 else None
+            None
+            if not v
+            else [float(a) for a in v.split("+")]
+            if "+" in v or p == 5
+            else float(v)
+            if (v and p != 0)
+            else int(v)
             for p, v in enumerate(i.split(","))
         ]
         for i in "".join(string.split("?")[0]).split(";")

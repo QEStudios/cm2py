@@ -12,5 +12,7 @@ CONDUCTOR = 8
 CUSTOM = 9
 XAND = 10
 XNOR = 11
+RANDOM = 12
+TEXT = 13
 
 from .cm2py import *
