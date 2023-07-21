@@ -27,6 +27,8 @@ class Save:
     def __init__(self):
         self.blocks = []
         self.connections = {}
+        self.blockCount = 0
+        self.connectionCount = 0
 
     def addBlock(self, blockId, pos, state=False, properties=None, snapToGrid=True):
         """Add a block to the save."""
@@ -35,6 +37,7 @@ class Save:
         else:
             newBlock = Block(blockId, pos, state=state, properties=properties)
         self.blocks.append(newBlock)
+        self.blockCount += 1
         return newBlock
 
     def addConnection(self, source, target):
@@ -44,6 +47,7 @@ class Save:
             self.connections[str(newConnection.target.uuid)].append(newConnection)
         else:
             self.connections[str(newConnection.target.uuid)] = [newConnection]
+        self.connectionCount += 1
         return newConnection
 
     def exportSave(self):
@@ -74,6 +78,7 @@ class Save:
                     del self.connections[str(n.target.uuid)][self.connections[str(n.target.uuid)].index(n)]
                     break
         del self.blocks[self.blocks.index(blockRef)]
+        self.blockCount -= 1
         return
 
     def deleteConnection(self, connectionRef):
@@ -84,6 +89,7 @@ class Save:
             for n in c:
                 if connectionRef == n:
                     del self.connections[str(n.target.uuid)][self.connections[str(n.target.uuid)].index(n)]
+        self.connectionCount -= 1
 
 
 class Block:
