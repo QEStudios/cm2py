@@ -141,7 +141,11 @@ def importSave(string, snapToGrid=True):
 
     newSave = Save()
 
-    blocks = [
+    sections = string.split("?")
+    blockString = sections[0].split(";")
+    connectionString = sections[1].split(";")
+
+    blockVals = [
         [
             None
             if not v
@@ -152,19 +156,18 @@ def importSave(string, snapToGrid=True):
             else int(v)
             for p, v in enumerate(i.split(","))
         ]
-        for i in "".join(string.split("?")[0]).split(";")
+        for i in blockString
     ]
-    connections = [
-        [int(v) for v in i.split(",")]
-        for i in "".join(string.split("?")[1]).split(";")
-        if len("".join(string.split("?")[1]).split(";")) > 1
-        and isinstance("".join(string.split("?")[1]).split(";")[0], int)
-        and isinstance("".join(string.split("?")[1]).split(";")[0], int)
-    ]
-    # Need to refactor these lines
+    if len(connectionString) > 1:
+        connections = [[int(v) for v in i.split(",")] for i in connectionString]
+    else:
+        connections = []
 
-    for b in blocks:
-        newSave.addBlock(b[0], (b[2], b[3], b[4]), state=bool(b[1]), properties=b[5], snapToGrid=snapToGrid)
+    blocks = []
+    for b in blockVals:
+        blocks.append(
+            newSave.addBlock(b[0], (b[2], b[3], b[4]), state=bool(b[1]), properties=b[5], snapToGrid=snapToGrid)
+        )
 
     for c in connections:
         newSave.addConnection(blocks[c[0] - 1], blocks[c[1] - 1])
