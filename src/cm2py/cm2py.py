@@ -14,7 +14,7 @@ __email__ = "qestudios17@example.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.2.5"
+__version__ = "0.2.7"
 
 import re
 from uuid import UUID, uuid4
@@ -27,6 +27,8 @@ class Save:
     def __init__(self):
         self.blocks = []
         self.connections = {}
+        self.blockCount = 0
+        self.connectionCount = 0
 
     def addBlock(self, blockId, pos, state=False, properties=None, snapToGrid=True):
         """Add a block to the save."""
@@ -35,6 +37,7 @@ class Save:
         else:
             newBlock = Block(blockId, pos, state=state, properties=properties)
         self.blocks.append(newBlock)
+        self.blockCount += 1
         return newBlock
 
     def addConnection(self, source, target):
@@ -44,26 +47,26 @@ class Save:
             self.connections[str(newConnection.target.uuid)].append(newConnection)
         else:
             self.connections[str(newConnection.target.uuid)] = [newConnection]
+        self.connectionCount += 1
         return newConnection
 
     def exportSave(self):
         """Export the save to a Circuit Maker 2 save string."""
-        blockStrings = []
+        string = ""
         for b in self.blocks:
-            p = "+".join(str(v) for v in b.properties) if b.properties else ""
-            blockStrings.append(f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z}," + p)
-        saveString = ";".join(blockStrings) + "?"
-        connectionStrings = []
+            if b.properties:
+                p = "+".join(str(v) for v in b.properties)
+                string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},{p};"
+            else:
+                string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},;"
+
+        string = string[:-1] + "?"
+        blockUuids = [str(b.uuid) for b in self.blocks]
         for c in self.connections.values():
             for n in c:
-                connectionStrings.append(
-                    (
-                        f"{[str(b.uuid) for b in self.blocks].index(str(n.source.uuid))+1},"
-                        f"{[str(b.uuid) for b in self.blocks].index(str(n.target.uuid))+1}"
-                    )
-                )
-        saveString += ";".join(connectionStrings) + "?"
-        return saveString
+                string += f"{blockUuids.index(str(n.source.uuid))+1},{blockUuids.index(str(n.target.uuid))+1};"
+        string = string[:-1] + "??"  # TODO: Custom build support & sign data support
+        return string
 
     def deleteBlock(self, blockRef):
         """Delete a block from the save."""
@@ -75,6 +78,7 @@ class Save:
                     del self.connections[str(n.target.uuid)][self.connections[str(n.target.uuid)].index(n)]
                     break
         del self.blocks[self.blocks.index(blockRef)]
+        self.blockCount -= 1
         return
 
     def deleteConnection(self, connectionRef):
@@ -85,11 +89,12 @@ class Save:
             for n in c:
                 if connectionRef == n:
                     del self.connections[str(n.target.uuid)][self.connections[str(n.target.uuid)].index(n)]
+        self.connectionCount -= 1
 
 
 class Block:
     def __init__(self, blockId, pos, state=False, properties=None):
-        assert isinstance(blockId, int) and 0 <= blockId <= 11, "blockId must be an integer between 0 and 11"
+        assert isinstance(blockId, int) and 0 <= blockId <= 13, "blockId must be an integer between 0 and 11"
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
@@ -98,7 +103,7 @@ class Block:
             and (isinstance(pos[2], float) or isinstance(pos[2], int))
         ), "pos must be a 3d tuple of integers"
         assert isinstance(state, bool), "state must be a boolean"
-        assert isinstance(properties, list) or properties == None, "properties must be a list of numbers, or None"
+        assert isinstance(properties, list) or properties == None, "properties must be a list of numbers, or None."
         self.blockId = blockId
         self.pos = pos
         self.x = self.pos[0]
@@ -121,7 +126,7 @@ def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
     regex = (
         # Match all blocks
-        r"^((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?;)+"
+        r"^((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?;)*"
         r"((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?\?)"
         # Match all connections
         r"((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+"
@@ -136,21 +141,33 @@ def importSave(string, snapToGrid=True):
 
     newSave = Save()
 
-    blocks = [
-        [[int(a) for a in v] if "+" in v else int(v) if v else None for v in i.split(",")]
-        for i in "".join(string.split("?")[0]).split(";")
-    ]
-    connections = [
-        [int(v) for v in i.split(",")]
-        for i in "".join(string.split("?")[1]).split(";")
-        if len("".join(string.split("?")[1]).split(";")) > 1
-        and isinstance("".join(string.split("?")[1]).split(";")[0], int)
-        and isinstance("".join(string.split("?")[1]).split(";")[0], int)
-    ]
-    # Need to refactor these lines
+    sections = string.split("?")
+    blockString = sections[0].split(";")
+    connectionString = sections[1].split(";")
 
-    for b in blocks:
-        newSave.addBlock(b[0], (b[2], b[3], b[4]), state=bool(b[1]), properties=b[5], snapToGrid=snapToGrid)
+    blockVals = [
+        [
+            None
+            if not v
+            else [float(a) for a in v.split("+")]
+            if "+" in v or p == 5
+            else float(v)
+            if (v and p != 0)
+            else int(v)
+            for p, v in enumerate(i.split(","))
+        ]
+        for i in blockString
+    ]
+    if len(connectionString) > 1:
+        connections = [[int(v) for v in i.split(",")] for i in connectionString]
+    else:
+        connections = []
+
+    blocks = []
+    for b in blockVals:
+        blocks.append(
+            newSave.addBlock(b[0], (b[2], b[3], b[4]), state=bool(b[1]), properties=b[5], snapToGrid=snapToGrid)
+        )
 
     for c in connections:
         newSave.addConnection(blocks[c[0] - 1], blocks[c[1] - 1])
