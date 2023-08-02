@@ -25,7 +25,7 @@ class Save:
     """A class to represent a save, which can be modified."""
 
     def __init__(self):
-        self.blocks = []
+        self.blocks = {}
         self.connections = {}
         self.blockCount = 0
         self.connectionCount = 0
@@ -36,7 +36,7 @@ class Save:
             newBlock = Block(blockId, tuple([int(math.floor(i)) for i in pos]), state=state, properties=properties)
         else:
             newBlock = Block(blockId, pos, state=state, properties=properties)
-        self.blocks.append(newBlock)
+        self.blocks[str(newBlock.uuid)] = newBlock
         self.blockCount += 1
         return newBlock
 
@@ -53,31 +53,31 @@ class Save:
     def exportSave(self):
         """Export the save to a Circuit Maker 2 save string."""
         string = ""
-        for b in self.blocks:
-            if b.properties:
-                p = "+".join(str(v) for v in b.properties)
-                string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},{p};"
-            else:
-                string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},;"
+        blockIndexes = {}
+        index = 0
+        for b in self.blocks.values():
+            p = "+".join(str(v) for v in b.properties) if b.properties else ""
+            string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},{p}"
+            blockIndexes[str(b.uuid)] = index
+            index += 1
 
         string = string[:-1] + "?"
-        blockUuids = [str(b.uuid) for b in self.blocks]
         for c in self.connections.values():
             for n in c:
-                string += f"{blockUuids.index(str(n.source.uuid))+1},{blockUuids.index(str(n.target.uuid))+1};"
+                string += f"{blockIndexes[str(n.source.uuid)]+1},{blockIndexes[str(n.target.uuid)]+1};"
         string = string[:-1] + "??"  # TODO: Custom build support & sign data support
         return string
 
     def deleteBlock(self, blockRef):
         """Delete a block from the save."""
         assert isinstance(blockRef, Block), "blockRef must be a Block object"
-        assert blockRef in self.blocks, "block does not exist in save"
+        assert str(blockRef.uuid) in self.blocks.keys(), "block does not exist in save"
         for c in self.connections.values():
             for n in c:
                 if n.source.uuid == blockRef.uuid or n.target.uuid == blockRef.uuid:
                     del self.connections[str(n.target.uuid)][self.connections[str(n.target.uuid)].index(n)]
                     break
-        del self.blocks[self.blocks.index(blockRef)]
+        del self.blocks[str(blockRef.uuid)]
         self.blockCount -= 1
         return
 
@@ -141,11 +141,7 @@ def importSave(string, snapToGrid=True):
 
     newSave = Save()
 
-    sections = string.split("?")
-    blockString = sections[0].split(";")
-    connectionString = sections[1].split(";")
-
-    blockVals = [
+    blocks = [
         [
             None
             if not v
@@ -156,18 +152,19 @@ def importSave(string, snapToGrid=True):
             else int(v)
             for p, v in enumerate(i.split(","))
         ]
-        for i in blockString
+        for i in "".join(string.split("?")[0]).split(";")
     ]
-    if len(connectionString) > 1:
-        connections = [[int(v) for v in i.split(",")] for i in connectionString]
-    else:
-        connections = []
+    connections = [
+        [int(v) for v in i.split(",")]
+        for i in "".join(string.split("?")[1]).split(";")
+        if len("".join(string.split("?")[1]).split(";")) > 1
+        and isinstance("".join(string.split("?")[1]).split(";")[0], int)
+        and isinstance("".join(string.split("?")[1]).split(";")[0], int)
+    ]
+    # Need to refactor these lines
 
-    blocks = []
-    for b in blockVals:
-        blocks.append(
-            newSave.addBlock(b[0], (b[2], b[3], b[4]), state=bool(b[1]), properties=b[5], snapToGrid=snapToGrid)
-        )
+    for b in blocks:
+        newSave.addBlock(b[0], (b[2], b[3], b[4]), state=bool(b[1]), properties=b[5], snapToGrid=snapToGrid)
 
     for c in connections:
         newSave.addConnection(blocks[c[0] - 1], blocks[c[1] - 1])
