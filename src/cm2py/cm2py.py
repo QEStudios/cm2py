@@ -14,7 +14,7 @@ __email__ = "qestudios17@example.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 import re
 from uuid import UUID, uuid4
@@ -57,7 +57,7 @@ class Save:
         index = 0
         for b in self.blocks.values():
             p = "+".join(str(v) for v in b.properties) if b.properties else ""
-            string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},{p}"
+            string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},{p};"
             blockIndexes[str(b.uuid)] = index
             index += 1
 
