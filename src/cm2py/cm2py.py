@@ -14,7 +14,7 @@ __email__ = "qestudios17@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 
 import regex as re
 from uuid import UUID, uuid4
