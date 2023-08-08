@@ -14,7 +14,7 @@ __email__ = "qestudios17@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 import regex as re
 from uuid import UUID, uuid4
@@ -55,6 +55,9 @@ class Save:
         string = ""
         blockIndexes = {}
         index = 0
+
+        assert self.blockCount > 0, "Saves with less than 1 block cannot be exported."
+
         for b in self.blocks.values():
             p = "+".join(str(v) for v in b.properties) if b.properties else ""
             string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},{p};"
@@ -65,7 +68,9 @@ class Save:
         for c in self.connections.values():
             for n in c:
                 string += f"{blockIndexes[str(n.source.uuid)]+1},{blockIndexes[str(n.target.uuid)]+1};"
-        string = string[:-1] + "??"  # TODO: Custom build support & sign data support
+        if self.connectionCount > 0:
+            string = string[:-1]
+        string = string + "??"  # TODO: Custom build support & sign data support
         return string
 
     def deleteBlock(self, blockRef):
