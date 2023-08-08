@@ -36,17 +36,17 @@ class Save:
             newBlock = Block(blockId, tuple([int(math.floor(i)) for i in pos]), state=state, properties=properties)
         else:
             newBlock = Block(blockId, pos, state=state, properties=properties)
-        self.blocks[str(newBlock.uuid)] = newBlock
+        self.blocks[newBlock.uuid] = newBlock
         self.blockCount += 1
         return newBlock
 
     def addConnection(self, source, target):
         """Add a connection to the save."""
         newConnection = Connection(source, target)
-        if str(newConnection.target.uuid) in self.connections:
-            self.connections[str(newConnection.target.uuid)].append(newConnection)
+        if newConnection.target.uuid in self.connections:
+            self.connections[newConnection.target.uuid].append(newConnection)
         else:
-            self.connections[str(newConnection.target.uuid)] = [newConnection]
+            self.connections[newConnection.target.uuid] = [newConnection]
         self.connectionCount += 1
         return newConnection
 
@@ -61,13 +61,13 @@ class Save:
         for b in self.blocks.values():
             p = "+".join(str(v) for v in b.properties) if b.properties else ""
             string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},{p};"
-            blockIndexes[str(b.uuid)] = index
+            blockIndexes[b.uuid] = index
             index += 1
 
         string = string[:-1] + "?"
         for c in self.connections.values():
             for n in c:
-                string += f"{blockIndexes[str(n.source.uuid)]+1},{blockIndexes[str(n.target.uuid)]+1};"
+                string += f"{blockIndexes[n.source.uuid]+1},{blockIndexes[n.target.uuid]+1};"
         if self.connectionCount > 0:
             string = string[:-1]
         string = string + "??"  # TODO: Custom build support & sign data support
@@ -76,13 +76,13 @@ class Save:
     def deleteBlock(self, blockRef):
         """Delete a block from the save."""
         assert isinstance(blockRef, Block), "blockRef must be a Block object"
-        assert str(blockRef.uuid) in self.blocks.keys(), "block does not exist in save"
+        assert blockRef.uuid in self.blocks.keys(), "block does not exist in save"
         for c in self.connections.values():
             for n in c:
                 if n.source.uuid == blockRef.uuid or n.target.uuid == blockRef.uuid:
-                    del self.connections[str(n.target.uuid)][self.connections[str(n.target.uuid)].index(n)]
+                    del self.connections[n.target.uuid][self.connections[n.target.uuid].index(n)]
                     break
-        del self.blocks[str(blockRef.uuid)]
+        del self.blocks[blockRef.uuid]
         self.blockCount -= 1
         return
 
@@ -93,7 +93,7 @@ class Save:
         for c in self.connections.values():
             for n in c:
                 if connectionRef == n:
-                    del self.connections[str(n.target.uuid)][self.connections[str(n.target.uuid)].index(n)]
+                    del self.connections[n.target.uuid][self.connections[n.target.uuid].index(n)]
         self.connectionCount -= 1
 
 
@@ -116,7 +116,7 @@ class Block:
         self.z = self.pos[2]
         self.state = state
         self.properties = properties
-        self.uuid = uuid4()
+        self.uuid = str(uuid4())
 
 
 class Connection:
