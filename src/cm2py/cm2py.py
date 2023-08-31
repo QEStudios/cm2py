@@ -164,7 +164,7 @@ def importSave(string, snapToGrid=True):
         for i in blockString
     ]
     connections = [[int(v) for v in i.split(",")] for i in connectionString]
-    
+
     blocks = []
     for b in blockVals:
         blocks.append(
