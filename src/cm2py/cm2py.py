@@ -99,7 +99,7 @@ class Save:
 
 class Block:
     def __init__(self, blockId, pos, state=False, properties=None):
-        assert isinstance(blockId, int) and 0 <= blockId <= 13, "blockId must be an integer between 0 and 11"
+        assert isinstance(blockId, int) and 0 <= blockId <= 14, "blockId must be an integer between 0 and 14"
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
