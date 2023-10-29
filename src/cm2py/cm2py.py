@@ -106,7 +106,7 @@ class Block:
             and (isinstance(pos[0], float) or isinstance(pos[0], int))
             and (isinstance(pos[1], float) or isinstance(pos[1], int))
             and (isinstance(pos[2], float) or isinstance(pos[2], int))
-        ), "pos must be a 3d tuple of integers"
+        ), "pos must be a 3d tuple of integers or floats"
         assert isinstance(state, bool), "state must be a boolean"
         assert isinstance(properties, list) or properties == None, "properties must be a list of numbers, or None."
         self.blockId = blockId
@@ -131,8 +131,7 @@ def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
     regex = (
         # Match all blocks
-        r"^((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?;)*"
-        r"((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?\?)"
+        r"^(((\d+,)(\d*,)((-?\d+(\.\d+)?)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?);)*((?2)\?)"
         # Match all connections
         r"((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+"
         r"([1-9][0-9]*),([1-9][0-9]*)))?\?)"
