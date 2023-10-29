@@ -14,7 +14,7 @@ __email__ = "qestudios17@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 
 import regex as re
 from uuid import UUID, uuid4
@@ -99,14 +99,14 @@ class Save:
 
 class Block:
     def __init__(self, blockId, pos, state=False, properties=None):
-        assert isinstance(blockId, int) and 0 <= blockId <= 13, "blockId must be an integer between 0 and 11"
+        assert isinstance(blockId, int) and 0 <= blockId <= 14, "blockId must be an integer between 0 and 14"
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
             and (isinstance(pos[0], float) or isinstance(pos[0], int))
             and (isinstance(pos[1], float) or isinstance(pos[1], int))
             and (isinstance(pos[2], float) or isinstance(pos[2], int))
-        ), "pos must be a 3d tuple of integers"
+        ), "pos must be a 3d tuple of integers or floats"
         assert isinstance(state, bool), "state must be a boolean"
         assert isinstance(properties, list) or properties == None, "properties must be a list of numbers, or None."
         self.blockId = blockId
@@ -131,8 +131,7 @@ def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
     regex = (
         # Match all blocks
-        r"^((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?;)*"
-        r"((\d+,){2}(-?\d+(\.\d+)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?\?)"
+        r"^(((\d+,)(\d*,)((-?\d+(\.\d+)?)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?);)*((?2)\?)"
         # Match all connections
         r"((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+"
         r"([1-9][0-9]*),([1-9][0-9]*)))?\?)"
