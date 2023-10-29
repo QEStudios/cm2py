@@ -14,7 +14,7 @@ __email__ = "qestudios17@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.3.4"
+__version__ = "0.3.5"
 
 import regex as re
 from uuid import UUID, uuid4
@@ -162,7 +162,7 @@ def importSave(string, snapToGrid=True):
         ]
         for i in blockString
     ]
-    connections = [[int(v) for v in i.split(",")] for i in connectionString]
+    connections = [[int(v) for v in i.split(",")] for i in connectionString if i]
 
     blocks = []
     for b in blockVals:

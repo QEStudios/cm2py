@@ -16,7 +16,11 @@ def test_addBlocks():
     save.addBlock(cm2.SOUND, (7, 0, 0))
     save.addBlock(cm2.CONDUCTOR, (8, 0, 0))
     save.addBlock(cm2.CUSTOM, (9, 0, 0))
+    save.addBlock(cm2.NAND, (10, 0, 0))
     save.addBlock(cm2.XNOR, (10, 0, 0))
+    save.addBlock(cm2.RANDOM, (10, 0, 0))
+    save.addBlock(cm2.TEXT, (10, 0, 0))
+    save.addBlock(cm2.TILE, (10, 0, 0))
 
     save.exportSave()
 
@@ -92,5 +96,11 @@ def test_importSave():
         "16,1;29,11;6,12;24,30;19,9;28,15;21,24;9,16;22,4;25,28;14,20;2,21;26,17;"
         "27,8;8,5;1,3;23,22;10,18;30,25;5,13;3,10;7,19;13,7;12,23;18,27;17,6;15,29??"
     )
+
+    save = cm2.importSave(string)
+
+
+def test_importSingleBlock():
+    string = "0,0,0,0,0,???"
 
     save = cm2.importSave(string)
