@@ -127,6 +127,25 @@ class Connection:
         self.target = target
 
 
+class Building:
+    def __init__(self, pos, rotation):
+        assert (
+            isinstance(pos, tuple)
+            and len(pos) == 3
+            and (isinstance(pos[0], float) or isinstance(pos[0], int))
+            and (isinstance(pos[1], float) or isinstance(pos[1], int))
+            and (isinstance(pos[2], float) or isinstance(pos[2], int))
+        ), "pos must be a 3d tuple of integers or floats"
+        assert isinstance(rotation, list) and len(rotation) == 9, "rotation must be a list of length 9"
+
+        self.pos = pos
+        self.x = self.pos[0]
+        self.y = self.pos[1]
+        self.z = self.pos[2]
+        self.rotation = rotation
+        self.blocks = {}
+
+
 def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
     regex = (
