@@ -130,7 +130,7 @@ class Connection:
 def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
     regex = (
-        "(?<![\d\w,;?+])" # Blocks
+        "^(?<![\d\w,;?+])" # Blocks
         "(?>"
           "(?<b>"
             "\d+,"
@@ -162,7 +162,7 @@ def importSave(string, snapToGrid=True):
         "(" # Sign data
           "([0-9a-fA-F]{2})"
         ")*"
-        "(?![\d\w,;?+])"
+        "(?![\d\w,;?+])$"
     )
 
     assert re.match(regex, string), "invalid save string"
