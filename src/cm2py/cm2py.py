@@ -130,15 +130,39 @@ class Connection:
 def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
     regex = (
-        # Match all blocks
-        r"^(((\d+,)(\d*,)((-?\d+(\.\d+)?)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?);)*((?2)\?)"
-        # Match all connections
-        r"((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+"
-        r"([1-9][0-9]*),([1-9][0-9]*)))?\?)"
-        # Match custom build syntax
-        r"((\w+(,(-?\d+(\.\d+)?(\+-?\d+(\.\d+)?)*)*)+)(;(\w+(,(-?\d+(\.\d+)?(\+-?\d+(\.\d+)?)*)*)+))*)*\?"
-        # Match sign data
-        r"[0-9a-f]*(;[0-9a-fA-F]*)*$"
+        "^(?<![\d\w,;?+])" # Blocks
+        "(?>"
+        "  (?<b>"
+        "    \d+,"
+        "    [01]?"
+        "    (?>,(?<d>-?\d*\.?\d*)){3}"
+        "    (?>(\+|,)(?&d)(?!,))*"
+        "    ;?"
+        "  )+"
+        "(?<!;)\?"
+        ")"
+
+        "(?>" # Connections
+        "  (?<i>[1-9][0-9]*),"
+        "  (?&i)"
+        "  ;?"
+        ")*"
+        "(?<!;)\?"
+
+        "(?>" # Buildings
+        "  [A-Za-z]+,"
+        "  (?>(?&d),){3}"
+        "  (?>(?&d),){9}"
+        "  (?>[01](?&i),?)*"
+        "  (?<!,)"
+        "  ;?"
+        ")*"
+        "(?<!;)\?"
+
+        "(" # Sign data
+        "  ([0-9a-fA-F]{2})"
+        ")*"
+        "(?![\d\w,;?+])$"
     )
 
     assert re.match(regex, string), "invalid save string"
