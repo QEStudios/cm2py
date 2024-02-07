@@ -4,7 +4,7 @@ cm2py is a Python package for generating and manipulating save strings for the r
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install cm2py.
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install cm2py from [pypi](https://pypi.org/project/cm2py/).
 
 ```bash
 pip install cm2py
