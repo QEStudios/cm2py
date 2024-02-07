@@ -15,5 +15,6 @@ XNOR = 11
 RANDOM = 12
 TEXT = 13
 TILE = 14
+NODE = 15
 
 from .cm2py import *
