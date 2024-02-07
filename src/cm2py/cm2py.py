@@ -7,7 +7,7 @@ for the Roblox game Circuit Maker 2 by ismellbeef1.
 
 __author__ = "SKM GEEK"
 __contact__ = "qestudios17@gmail.com"
-__copyright__ = "Copyright 2023, SKM GEEK"
+__copyright__ = "Copyright 2024, SKM GEEK"
 __date__ = "2023/05/21"
 __deprecated__ = False
 __email__ = "qestudios17@gmail.com"
@@ -126,46 +126,23 @@ class Connection:
         self.source = source
         self.target = target
 
+def validateSave(string):
+    """Check whether a string is a valid savestring or not."""
+    regex = (
+        # Match all blocks
+        r"^((?<block>\d+,[01]?,(?<num>-?\d+(\.\d*)?)?,((?&num)?,){2}((?&num)(\+(?&num))*)?)(;(?&block))*)\?"
+        # Match all connections
+        r"((?<connection>[1-9][0-9]*,[1-9][0-9]*)(;(?&connection))*)?\?"
+        # Match all buildings
+        r"((?<building>[A-Za-z]+(,(?&num)){12}(,([01]([1-9][0-9]*)(\+[01]([1-9][0-9]*))*)?)*)(;(?&building))*)?\?"
+        # Match building data
+        r"((?<data>[A-Za-z0-9]*)(;(?&data))*)?$"
+    )
+    return re.match(regex, string)
 
 def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
-    regex = (
-        "^(?<![\d\w,;?+])" # Blocks
-        "(?>"
-          "(?<b>"
-            "\d+,"
-            "[01]?"
-            "(?>,(?<d>-?\d*\.?\d*)){3}"
-            "(?>(\+|,)(?&d)(?!,))*"
-            ";?"
-          ")+"
-        "(?<!;)\?"
-        ")"
-
-        "(?>" # Connections
-          "(?<i>[1-9][0-9]*),"
-          "(?&i)"
-          ";?"
-        ")*"
-        "(?<!;)\?"
-
-        "(?>" # Buildings
-          "[A-Za-z]+,"
-          "(?>(?&d),){3}"
-          "(?>(?&d),){9}"
-          "(?>[01](?&i),?)*"
-          "(?<!,)"
-          ";?"
-        ")*"
-        "(?<!;)\?"
-
-        "(" # Sign data
-          "([0-9a-fA-F]{2})"
-        ")*"
-        "(?![\d\w,;?+])$"
-    )
-
-    assert re.match(regex, string), "invalid save string"
+    assert validateSave(string), "invalid save string"
 
     newSave = Save()
 
