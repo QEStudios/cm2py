@@ -146,16 +146,43 @@ class Connection:
 
 def validateSave(string):
     """Check whether a string is a valid savestring or not."""
+    # fmt: off
     regex = (
-        # Match all blocks
-        r"^((?<block>\d+,[01]?,(?<num>-?\d+(\.\d*)?)?,((?&num)?,){2}((?&num)(\+(?&num))*)?)(;(?&block))*)\?"
-        # Match all connections
-        r"((?<connection>[1-9][0-9]*,[1-9][0-9]*)(;(?&connection))*)?\?"
-        # Match all buildings
-        r"((?<building>[A-Za-z]+(,(?&num)){12}(,([01]([1-9][0-9]*)(\+[01]([1-9][0-9]*))*)?)*)(;(?&building))*)?\?"
-        # Match building data
-        r"((?<data>[A-Za-z0-9]*)(;(?&data))*)?$"
+        r"(?<![\d\w,;?+])" # Blocks
+        r"(?>"
+          r"(?<b>"
+            r"\d+,"
+            r"[01]?"
+            r"(?>,(?<d>-?\d*\.?\d*)){3}"
+            r"(?>(\+|,)(?&d)(?!,))*"
+            r";?"
+          r")+"
+        r"(?<!;)\?"
+        r")"
+
+        r"(?>" # Connections
+          r"(?<i>[1-9][0-9]*),"
+          r"(?&i)"
+          r";?"
+        r")*"
+        r"(?<!;)\?"
+
+        r"(?>" # Buildings
+          r"[A-Za-z]+,"
+          r"(?>(?&d),){3}"
+          r"(?>(?&d),){9}"
+          r"(?>[01](?&i),?)*"
+          r"(?<!,)"
+          r";?"
+        r")*"
+        r"(?<!;)\?"
+
+        r"(" # Sign data
+          r"([0-9a-fA-F]{2})"
+        r")*"
+        r"(?![\d\w,;?+])$"
     )
+    # fmt: on
     return re.match(regex, string)
 
 
