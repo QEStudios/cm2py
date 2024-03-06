@@ -114,7 +114,7 @@ class Block:
     def __init__(self, blockId, pos, state=False, properties=None):
         assert (
             isinstance(blockId, int) and 0 <= blockId <= 17
-        ), "blockId must be an integer between 0 and 14"
+        ), "blockId must be an integer between 0 and 17"
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
