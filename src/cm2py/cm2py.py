@@ -16,8 +16,8 @@ __maintainer__ = "SKM GEEK"
 __status__ = "Production"
 __version__ = "0.3.5"
 
-import regex as re
 from uuid import UUID, uuid4
+import regex as re
 import math
 
 
