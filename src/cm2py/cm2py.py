@@ -33,7 +33,12 @@ class Save:
     def addBlock(self, blockId, pos, state=False, properties=None, snapToGrid=True):
         """Add a block to the save."""
         if snapToGrid:
-            newBlock = Block(blockId, tuple([int(math.floor(i)) for i in pos]), state=state, properties=properties)
+            newBlock = Block(
+                blockId,
+                tuple([int(math.floor(i)) for i in pos]),
+                state=state,
+                properties=properties,
+            )
         else:
             newBlock = Block(blockId, pos, state=state, properties=properties)
         self.blocks[newBlock.uuid] = newBlock
@@ -67,7 +72,9 @@ class Save:
         string = string[:-1] + "?"
         for c in self.connections.values():
             for n in c:
-                string += f"{blockIndexes[n.source.uuid]+1},{blockIndexes[n.target.uuid]+1};"
+                string += (
+                    f"{blockIndexes[n.source.uuid]+1},{blockIndexes[n.target.uuid]+1};"
+                )
         if self.connectionCount > 0:
             string = string[:-1]
         string = string + "??"  # TODO: Custom build support & sign data support
@@ -80,7 +87,9 @@ class Save:
         for c in self.connections.values():
             for n in c:
                 if n.source.uuid == blockRef.uuid or n.target.uuid == blockRef.uuid:
-                    del self.connections[n.target.uuid][self.connections[n.target.uuid].index(n)]
+                    del self.connections[n.target.uuid][
+                        self.connections[n.target.uuid].index(n)
+                    ]
                     break
         del self.blocks[blockRef.uuid]
         self.blockCount -= 1
@@ -88,18 +97,24 @@ class Save:
 
     def deleteConnection(self, connectionRef):
         """Delete a connection from the save."""
-        assert isinstance(connectionRef, Connection), "connectionRef must be a Connection object"
+        assert isinstance(
+            connectionRef, Connection
+        ), "connectionRef must be a Connection object"
         assert connectionRef in (n for c in self.connections.values() for n in c)
         for c in self.connections.values():
             for n in c:
                 if connectionRef == n:
-                    del self.connections[n.target.uuid][self.connections[n.target.uuid].index(n)]
+                    del self.connections[n.target.uuid][
+                        self.connections[n.target.uuid].index(n)
+                    ]
         self.connectionCount -= 1
 
 
 class Block:
     def __init__(self, blockId, pos, state=False, properties=None):
-        assert isinstance(blockId, int) and 0 <= blockId <= 17, "blockId must be an integer between 0 and 14"
+        assert (
+            isinstance(blockId, int) and 0 <= blockId <= 17
+        ), "blockId must be an integer between 0 and 14"
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
@@ -108,7 +123,9 @@ class Block:
             and (isinstance(pos[2], float) or isinstance(pos[2], int))
         ), "pos must be a 3d tuple of integers or floats"
         assert isinstance(state, bool), "state must be a boolean"
-        assert isinstance(properties, list) or properties == None, "properties must be a list of numbers, or None."
+        assert (
+            isinstance(properties, list) or properties == None
+        ), "properties must be a list of numbers, or None."
         self.blockId = blockId
         self.pos = pos
         self.x = self.pos[0]
@@ -126,6 +143,7 @@ class Connection:
         self.source = source
         self.target = target
 
+
 def validateSave(string):
     """Check whether a string is a valid savestring or not."""
     regex = (
@@ -140,6 +158,7 @@ def validateSave(string):
     )
     return re.match(regex, string)
 
+
 def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
     assert validateSave(string), "invalid save string"
@@ -152,13 +171,15 @@ def importSave(string, snapToGrid=True):
 
     blockVals = [
         [
-            None
-            if not v
-            else [float(a) for a in v.split("+")]
-            if "+" in v or p == 5
-            else float(v)
-            if (v and p != 0)
-            else int(v)
+            (
+                None
+                if not v
+                else (
+                    [float(a) for a in v.split("+")]
+                    if "+" in v or p == 5
+                    else float(v) if (v and p != 0) else int(v)
+                )
+            )
             for p, v in enumerate(i.split(","))
         ]
         for i in blockString
@@ -168,7 +189,13 @@ def importSave(string, snapToGrid=True):
     blocks = []
     for b in blockVals:
         blocks.append(
-            newSave.addBlock(b[0], (b[2], b[3], b[4]), state=bool(b[1]), properties=b[5], snapToGrid=snapToGrid)
+            newSave.addBlock(
+                b[0],
+                (b[2], b[3], b[4]),
+                state=bool(b[1]),
+                properties=b[5],
+                snapToGrid=snapToGrid,
+            )
         )
 
     for c in connections:
