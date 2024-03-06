@@ -112,6 +112,7 @@ class Save:
 
 class Block:
     __initialised = False
+
     def __init__(self, blockId, pos, state=False, properties=None):
         assert (
             isinstance(blockId, int) and 0 <= blockId <= 17

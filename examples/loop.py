@@ -18,7 +18,9 @@ for i in range(LENGTH):
 
 for i in range(LENGTH):
     # connections.append(save.addConnection(blocks[i-1], blocks[i]))
-    save.addConnection(blocks[i - 1], blocks[i])  # Directly add the connections to the save object
+    save.addConnection(
+        blocks[i - 1], blocks[i]
+    )  # Directly add the connections to the save object
 
 saveString = save.exportSave()
 print(saveString)

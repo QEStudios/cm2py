@@ -86,22 +86,24 @@ def test_properties():
 
     save.exportSave()
 
+
 def test_move():
     save = cm2.Save()
 
-    b1 = save.addBlock(cm2.OR, (1,2,3))
-    assert b1.pos == (1,2,3)
+    b1 = save.addBlock(cm2.OR, (1, 2, 3))
+    assert b1.pos == (1, 2, 3)
     assert b1.x == 1 and b1.y == 2 and b1.z == 3
 
-    b1.pos = (4,5,6)
-    assert b1.pos == (4,5,6)
+    b1.pos = (4, 5, 6)
+    assert b1.pos == (4, 5, 6)
     assert b1.x == 4 and b1.y == 5 and b1.z == 6
 
     b1.x = 7
     b1.y = 8
     b1.z = 9
-    assert b1.pos == (7,8,9)
+    assert b1.pos == (7, 8, 9)
     assert b1.x == 7 and b1.y == 8 and b1.z == 9
+
 
 def test_importSave():
     string = (
