@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+from .cm2py import *
+
 # Pre-defined blockId definitions
 NOR = 0
 AND = 1
@@ -18,5 +21,3 @@ TILE = 14
 NODE = 15
 DELAY = 16
 ANTENNA = 17
-
-from .cm2py import *
