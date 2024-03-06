@@ -16,9 +16,9 @@ __maintainer__ = "SKM GEEK"
 __status__ = "Production"
 __version__ = "0.3.5"
 
-from uuid import UUID, uuid4
-import regex as re
+from uuid import uuid4
 import math
+import regex as re
 
 
 class Save:
@@ -83,7 +83,7 @@ class Save:
     def deleteBlock(self, blockRef):
         """Delete a block from the save."""
         assert isinstance(blockRef, Block), "blockRef must be a Block object"
-        assert blockRef.uuid in self.blocks.keys(), "block does not exist in save"
+        assert blockRef.uuid in self.blocks, "block does not exist in save"
         for c in self.connections.values():
             for n in c:
                 if n.source.uuid == blockRef.uuid or n.target.uuid == blockRef.uuid:
@@ -118,13 +118,13 @@ class Block:
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
-            and (isinstance(pos[0], float) or isinstance(pos[0], int))
-            and (isinstance(pos[1], float) or isinstance(pos[1], int))
-            and (isinstance(pos[2], float) or isinstance(pos[2], int))
+            and (isinstance(pos[0], (float, int)))
+            and (isinstance(pos[1], (float, int)))
+            and (isinstance(pos[2], (float, int)))
         ), "pos must be a 3d tuple of integers or floats"
         assert isinstance(state, bool), "state must be a boolean"
         assert (
-            isinstance(properties, list) or properties == None
+            isinstance(properties, list) or properties is None
         ), "properties must be a list of numbers, or None."
         self.blockId = blockId
         self.pos = pos
