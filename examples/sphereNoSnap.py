@@ -13,9 +13,19 @@ save = cm2.Save()
 
 for r in range(resolution // 2):
     for i in range(resolution):
-        x = round((math.sin(i / (resolution / (math.pi * 2)))) * radius * math.cos(r / (resolution / (math.pi * 2))), 3)
+        x = round(
+            (math.sin(i / (resolution / (math.pi * 2))))
+            * radius
+            * math.cos(r / (resolution / (math.pi * 2))),
+            3,
+        )
         y = round((math.cos(i / (resolution / (math.pi * 2))) + 1) * radius, 3)
-        z = round((math.sin(r / (resolution / (math.pi * 2)))) * radius * math.sin(i / (resolution / (math.pi * 2))), 3)
+        z = round(
+            (math.sin(r / (resolution / (math.pi * 2))))
+            * radius
+            * math.sin(i / (resolution / (math.pi * 2))),
+            3,
+        )
         save.addBlock(block, (x, y, z), snapToGrid=False)
 
 saveString = save.exportSave()

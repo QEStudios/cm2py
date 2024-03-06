@@ -7,18 +7,18 @@ for the Roblox game Circuit Maker 2 by ismellbeef1.
 
 __author__ = "SKM GEEK"
 __contact__ = "qestudios17@gmail.com"
-__copyright__ = "Copyright 2023, SKM GEEK"
+__copyright__ = "Copyright 2024, SKM GEEK"
 __date__ = "2023/05/21"
 __deprecated__ = False
 __email__ = "qestudios17@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.3.5"
+__version__ = "0.3.6"
 
-import regex as re
-from uuid import UUID, uuid4
+from uuid import uuid4
 import math
+import regex as re
 
 
 class Save:
@@ -33,7 +33,12 @@ class Save:
     def addBlock(self, blockId, pos, state=False, properties=None, snapToGrid=True):
         """Add a block to the save."""
         if snapToGrid:
-            newBlock = Block(blockId, tuple([int(math.floor(i)) for i in pos]), state=state, properties=properties)
+            newBlock = Block(
+                blockId,
+                tuple([int(math.floor(i)) for i in pos]),
+                state=state,
+                properties=properties,
+            )
         else:
             newBlock = Block(blockId, pos, state=state, properties=properties)
         self.blocks[newBlock.uuid] = newBlock
@@ -67,7 +72,9 @@ class Save:
         string = string[:-1] + "?"
         for c in self.connections.values():
             for n in c:
-                string += f"{blockIndexes[n.source.uuid]+1},{blockIndexes[n.target.uuid]+1};"
+                string += (
+                    f"{blockIndexes[n.source.uuid]+1},{blockIndexes[n.target.uuid]+1};"
+                )
         if self.connectionCount > 0:
             string = string[:-1]
         string = string + "??"  # TODO: Custom build support & sign data support
@@ -76,11 +83,13 @@ class Save:
     def deleteBlock(self, blockRef):
         """Delete a block from the save."""
         assert isinstance(blockRef, Block), "blockRef must be a Block object"
-        assert blockRef.uuid in self.blocks.keys(), "block does not exist in save"
+        assert blockRef.uuid in self.blocks, "block does not exist in save"
         for c in self.connections.values():
             for n in c:
                 if n.source.uuid == blockRef.uuid or n.target.uuid == blockRef.uuid:
-                    del self.connections[n.target.uuid][self.connections[n.target.uuid].index(n)]
+                    del self.connections[n.target.uuid][
+                        self.connections[n.target.uuid].index(n)
+                    ]
                     break
         del self.blocks[blockRef.uuid]
         self.blockCount -= 1
@@ -88,27 +97,37 @@ class Save:
 
     def deleteConnection(self, connectionRef):
         """Delete a connection from the save."""
-        assert isinstance(connectionRef, Connection), "connectionRef must be a Connection object"
+        assert isinstance(
+            connectionRef, Connection
+        ), "connectionRef must be a Connection object"
         assert connectionRef in (n for c in self.connections.values() for n in c)
         for c in self.connections.values():
             for n in c:
                 if connectionRef == n:
-                    del self.connections[n.target.uuid][self.connections[n.target.uuid].index(n)]
+                    del self.connections[n.target.uuid][
+                        self.connections[n.target.uuid].index(n)
+                    ]
         self.connectionCount -= 1
 
 
 class Block:
+    __initialised = False
+
     def __init__(self, blockId, pos, state=False, properties=None):
-        assert isinstance(blockId, int) and 0 <= blockId <= 14, "blockId must be an integer between 0 and 14"
+        assert (
+            isinstance(blockId, int) and 0 <= blockId <= 17
+        ), "blockId must be an integer between 0 and 17"
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
-            and (isinstance(pos[0], float) or isinstance(pos[0], int))
-            and (isinstance(pos[1], float) or isinstance(pos[1], int))
-            and (isinstance(pos[2], float) or isinstance(pos[2], int))
+            and (isinstance(pos[0], (float, int)))
+            and (isinstance(pos[1], (float, int)))
+            and (isinstance(pos[2], (float, int)))
         ), "pos must be a 3d tuple of integers or floats"
         assert isinstance(state, bool), "state must be a boolean"
-        assert isinstance(properties, list) or properties == None, "properties must be a list of numbers, or None."
+        assert (
+            isinstance(properties, list) or properties is None
+        ), "properties must be a list of numbers, or None."
         self.blockId = blockId
         self.pos = pos
         self.x = self.pos[0]
@@ -117,6 +136,19 @@ class Block:
         self.state = state
         self.properties = properties
         self.uuid = str(uuid4())
+
+        self.__initialised = True
+
+    def __setattr__(self, name, value):
+        self.__dict__[name] = value
+        if not self.__initialised:
+            return
+        if name == "pos":
+            self.__dict__["x"] = self.pos[0]
+            self.__dict__["y"] = self.pos[1]
+            self.__dict__["z"] = self.pos[2]
+        elif name in ["x", "y", "z"]:
+            self.__dict__["pos"] = (self.x, self.y, self.z)
 
 
 class Connection:
@@ -127,21 +159,51 @@ class Connection:
         self.target = target
 
 
+def validateSave(string):
+    """Check whether a string is a valid savestring or not."""
+    # fmt: off
+    regex = (
+        r"(?<![\d\w,;?+])" # Blocks
+        r"(?>"
+          r"(?<b>"
+            r"\d+,"
+            r"[01]?"
+            r"(?>,(?<d>-?\d*\.?\d*)){3}"
+            r"(?>(\+|,)(?&d)(?!,))*"
+            r";?"
+          r")+"
+        r"(?<!;)\?"
+        r")"
+
+        r"(?>" # Connections
+          r"(?<i>[1-9][0-9]*),"
+          r"(?&i)"
+          r";?"
+        r")*"
+        r"(?<!;)\?"
+
+        r"(?>" # Buildings
+          r"[A-Za-z]+,"
+          r"(?>(?&d),){3}"
+          r"(?>(?&d),){9}"
+          r"(?>[01](?&i),?)*"
+          r"(?<!,)"
+          r";?"
+        r")*"
+        r"(?<!;)\?"
+
+        r"(" # Sign data
+          r"([0-9a-fA-F]{2})"
+        r")*"
+        r"(?![\d\w,;?+])$"
+    )
+    # fmt: on
+    return re.match(regex, string)
+
+
 def importSave(string, snapToGrid=True):
     """Import a Circuit Maker 2 save string as a save."""
-    regex = (
-        # Match all blocks
-        r"^(((\d+,)(\d*,)((-?\d+(\.\d+)?)?,){3}(((\d+(\.\d+)?\+)*(\d+(\.\d+)?)))?);)*((?2)\?)"
-        # Match all connections
-        r"((([1-9][0-9]*),([1-9][0-9]*)|((([1-9][0-9]*),([1-9][0-9]*);)+"
-        r"([1-9][0-9]*),([1-9][0-9]*)))?\?)"
-        # Match custom build syntax
-        r"((\w+(,(-?\d+(\.\d+)?(\+-?\d+(\.\d+)?)*)*)+)(;(\w+(,(-?\d+(\.\d+)?(\+-?\d+(\.\d+)?)*)*)+))*)*\?"
-        # Match sign data
-        r"[0-9a-f]*(;[0-9a-fA-F]*)*$"
-    )
-
-    assert re.match(regex, string), "invalid save string"
+    assert validateSave(string), "invalid save string"
 
     newSave = Save()
 
@@ -151,13 +213,15 @@ def importSave(string, snapToGrid=True):
 
     blockVals = [
         [
-            None
-            if not v
-            else [float(a) for a in v.split("+")]
-            if "+" in v or p == 5
-            else float(v)
-            if (v and p != 0)
-            else int(v)
+            (
+                None
+                if not v
+                else (
+                    [float(a) for a in v.split("+")]
+                    if "+" in v or p == 5
+                    else float(v) if (v and p != 0) else int(v)
+                )
+            )
             for p, v in enumerate(i.split(","))
         ]
         for i in blockString
@@ -167,7 +231,13 @@ def importSave(string, snapToGrid=True):
     blocks = []
     for b in blockVals:
         blocks.append(
-            newSave.addBlock(b[0], (b[2], b[3], b[4]), state=bool(b[1]), properties=b[5], snapToGrid=snapToGrid)
+            newSave.addBlock(
+                b[0],
+                (b[2], b[3], b[4]),
+                state=bool(b[1]),
+                properties=b[5],
+                snapToGrid=snapToGrid,
+            )
         )
 
     for c in connections:
