@@ -16,5 +16,7 @@ RANDOM = 12
 TEXT = 13
 TILE = 14
 NODE = 15
+DELAY = 16
+ANTENNA = 17
 
 from .cm2py import *
