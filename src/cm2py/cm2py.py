@@ -111,6 +111,7 @@ class Save:
 
 
 class Block:
+    __initialised = False
     def __init__(self, blockId, pos, state=False, properties=None):
         assert (
             isinstance(blockId, int) and 0 <= blockId <= 17
@@ -134,6 +135,19 @@ class Block:
         self.state = state
         self.properties = properties
         self.uuid = str(uuid4())
+
+        self.__initialised = True
+
+    def __setattr__(self, name, value):
+        self.__dict__[name] = value
+        if not self.__initialised:
+            return
+        if name == "pos":
+            self.__dict__["x"] = self.pos[0]
+            self.__dict__["y"] = self.pos[1]
+            self.__dict__["z"] = self.pos[2]
+        elif name in ["x", "y", "z"]:
+            self.__dict__["pos"] = (self.x, self.y, self.z)
 
 
 class Connection:
