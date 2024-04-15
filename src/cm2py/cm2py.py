@@ -264,7 +264,7 @@ def generateCLA(
     generateIO: bool = True,
 ) -> str:
     """
-    Generates a carry-lookahead adder based on the number of bits
+    Generates a carry-lookahead adder based on the number of bits. Has options for including the overflow and carry in.
     """
 
     save = Save()
@@ -374,7 +374,7 @@ def generateDecoder(
     inputShape: Literal["vertical", "horizontal"] = "vertical",
 ) -> str:
     """
-    Generates a decoder based on the number of bits
+    Generates a decoder based on the number of bits. Includes options for different shapes, like square and line.
     """
 
     save = Save()
@@ -427,7 +427,7 @@ def encodeToMemory(
     data: list[int], memoryType: Literal["mass", "massive", "huge"]
 ) -> str:
     """
-    Turns a list of integers into
+    Turns a list of integers into a string that can be pasted into one of the memory buildings.
     """
 
     assert memoryType in [
@@ -457,6 +457,9 @@ def encodeToMemory(
 
 
 def halfPrecisionBitsToNumber(bits: int) -> float:
+    """
+    Converts a half-precision floating point number stored in an integer to a python float.
+    """
     packed_bytes = bits.to_bytes(2, byteorder="big")
 
     half_precision_float = struct.unpack(">e", packed_bytes)[0]
@@ -465,6 +468,9 @@ def halfPrecisionBitsToNumber(bits: int) -> float:
 
 
 def numberToHalfPrecisionBits(f: float) -> int:
+    """
+    Converts a python float to a half-precision floating point value stored in an integer. This integer then can be used with the encodeToMemory() function.
+    """
     if f != f or f == float("inf") or f == float("-inf"):
         if f == float("inf"):
             return 0x7C00
@@ -485,7 +491,7 @@ def generateFunctionLookUpTable(
 ) -> str:
     """
     Generates a lookup table string that can be pasted into a Massive Memory for a math function.
-    Takes in a value type parameter as well. If the value type is int, it leaves the results as they are, but if it's float, it converts the values into half-precision floating point
+    Takes in a value type parameter as well. If the value type is int, it leaves the results as they are, but if it's float, it converts the values into half-precision floating point.
     """
     values = []
     for num in range(size):
