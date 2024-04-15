@@ -8,106 +8,20 @@ for the Roblox game Circuit Maker 2 by ismellbeef1.
 __author__ = "SKM GEEK"
 __contact__ = "qestudios17@gmail.com"
 __copyright__ = "Copyright 2024, SKM GEEK"
-__date__ = "2023/05/21"
+__date__ = "2024/04/14"
 __deprecated__ = False
 __email__ = "qestudios17@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.3.6"
+__version__ = "0.3.7"
 
 from uuid import uuid4
 import math
 import regex as re
-
-
-class Save:
-    """A class to represent a save, which can be modified."""
-
-    def __init__(self):
-        self.blocks = {}
-        self.connections = {}
-        self.blockCount = 0
-        self.connectionCount = 0
-
-    def addBlock(self, blockId, pos, state=False, properties=None, snapToGrid=True):
-        """Add a block to the save."""
-        if snapToGrid:
-            newBlock = Block(
-                blockId,
-                tuple([int(math.floor(i)) for i in pos]),
-                state=state,
-                properties=properties,
-            )
-        else:
-            newBlock = Block(blockId, pos, state=state, properties=properties)
-        self.blocks[newBlock.uuid] = newBlock
-        self.blockCount += 1
-        return newBlock
-
-    def addConnection(self, source, target):
-        """Add a connection to the save."""
-        newConnection = Connection(source, target)
-        if newConnection.target.uuid in self.connections:
-            self.connections[newConnection.target.uuid].append(newConnection)
-        else:
-            self.connections[newConnection.target.uuid] = [newConnection]
-        self.connectionCount += 1
-        return newConnection
-
-    def exportSave(self):
-        """Export the save to a Circuit Maker 2 save string."""
-        string = ""
-        blockIndexes = {}
-        index = 0
-
-        assert self.blockCount > 0, "Saves with less than 1 block cannot be exported."
-
-        for b in self.blocks.values():
-            p = "+".join(str(v) for v in b.properties) if b.properties else ""
-            string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},{p};"
-            blockIndexes[b.uuid] = index
-            index += 1
-
-        string = string[:-1] + "?"
-        for c in self.connections.values():
-            for n in c:
-                string += (
-                    f"{blockIndexes[n.source.uuid]+1},{blockIndexes[n.target.uuid]+1};"
-                )
-        if self.connectionCount > 0:
-            string = string[:-1]
-        string = string + "??"  # TODO: Custom build support & sign data support
-        return string
-
-    def deleteBlock(self, blockRef):
-        """Delete a block from the save."""
-        assert isinstance(blockRef, Block), "blockRef must be a Block object"
-        assert blockRef.uuid in self.blocks, "block does not exist in save"
-        for c in self.connections.values():
-            for n in c:
-                if n.source.uuid == blockRef.uuid or n.target.uuid == blockRef.uuid:
-                    del self.connections[n.target.uuid][
-                        self.connections[n.target.uuid].index(n)
-                    ]
-                    break
-        del self.blocks[blockRef.uuid]
-        self.blockCount -= 1
-        return
-
-    def deleteConnection(self, connectionRef):
-        """Delete a connection from the save."""
-        assert isinstance(
-            connectionRef, Connection
-        ), "connectionRef must be a Connection object"
-        assert connectionRef in (n for c in self.connections.values() for n in c)
-        for c in self.connections.values():
-            for n in c:
-                if connectionRef == n:
-                    del self.connections[n.target.uuid][
-                        self.connections[n.target.uuid].index(n)
-                    ]
-        self.connectionCount -= 1
+from typing import Literal, Callable
+import string
+import struct
 
 
 class Block:
@@ -159,7 +73,103 @@ class Connection:
         self.target = target
 
 
-def validateSave(string):
+class Save:
+    """A class to represent a save, which can be modified."""
+
+    def __init__(self):
+        self.blocks = {}
+        self.connections = {}
+        self.blockCount = 0
+        self.connectionCount = 0
+
+    def addBlock(
+        self,
+        blockId: int,
+        pos: tuple[float, float, float],
+        state: bool = False,
+        properties: bool = None,
+        snapToGrid: bool = True,
+    ) -> Block:
+        """Add a block to the save."""
+        if snapToGrid:
+            newBlock = Block(
+                blockId,
+                tuple([int(math.floor(i)) for i in pos]),
+                state=state,
+                properties=properties,
+            )
+        else:
+            newBlock = Block(blockId, pos, state=state, properties=properties)
+        self.blocks[newBlock.uuid] = newBlock
+        self.blockCount += 1
+        return newBlock
+
+    def addConnection(self, source: Block, target: Block) -> Connection:
+        """Add a connection to the save."""
+        newConnection = Connection(source, target)
+        if newConnection.target.uuid in self.connections:
+            self.connections[newConnection.target.uuid].append(newConnection)
+        else:
+            self.connections[newConnection.target.uuid] = [newConnection]
+        self.connectionCount += 1
+        return newConnection
+
+    def exportSave(self) -> str:
+        """Export the save to a Circuit Maker 2 save string."""
+        string = ""
+        blockIndexes = {}
+        index = 0
+
+        assert self.blockCount > 0, "Saves with less than 1 block cannot be exported."
+
+        for b in self.blocks.values():
+            p = "+".join(str(v) for v in b.properties) if b.properties else ""
+            string += f"{b.blockId},{int(b.state)},{b.x},{b.y},{b.z},{p};"
+            blockIndexes[b.uuid] = index
+            index += 1
+
+        string = string[:-1] + "?"
+        for c in self.connections.values():
+            for n in c:
+                string += (
+                    f"{blockIndexes[n.source.uuid]+1},{blockIndexes[n.target.uuid]+1};"
+                )
+        if self.connectionCount > 0:
+            string = string[:-1]
+        string = string + "??"  # TODO: Custom build support & sign data support
+        return string
+
+    def deleteBlock(self, blockRef: Block) -> None:
+        """Delete a block from the save."""
+        assert isinstance(blockRef, Block), "blockRef must be a Block object"
+        assert blockRef.uuid in self.blocks, "block does not exist in save"
+        for c in self.connections.values():
+            for n in c:
+                if n.source.uuid == blockRef.uuid or n.target.uuid == blockRef.uuid:
+                    del self.connections[n.target.uuid][
+                        self.connections[n.target.uuid].index(n)
+                    ]
+                    break
+        del self.blocks[blockRef.uuid]
+        self.blockCount -= 1
+        return
+
+    def deleteConnection(self, connectionRef: Connection) -> None:
+        """Delete a connection from the save."""
+        assert isinstance(
+            connectionRef, Connection
+        ), "connectionRef must be a Connection object"
+        assert connectionRef in (n for c in self.connections.values() for n in c)
+        for c in self.connections.values():
+            for n in c:
+                if connectionRef == n:
+                    del self.connections[n.target.uuid][
+                        self.connections[n.target.uuid].index(n)
+                    ]
+        self.connectionCount -= 1
+
+
+def validateSave(string: str) -> re.Match | None:
     """Check whether a string is a valid savestring or not."""
     # fmt: off
     regex = (
@@ -201,7 +211,7 @@ def validateSave(string):
     return re.match(regex, string)
 
 
-def importSave(string, snapToGrid=True):
+def importSave(string: str, snapToGrid: bool = True) -> Save:
     """Import a Circuit Maker 2 save string as a save."""
     assert validateSave(string), "invalid save string"
 
