@@ -85,9 +85,9 @@ class Save:
     def addBlock(
         self,
         blockId: int,
-        pos: tuple[float, float, float],
+        pos: tuple[float | int, float | int, float | int],
         state: bool = False,
-        properties: bool = None,
+        properties: list[int | float] | None = None,
         snapToGrid: bool = True,
     ) -> Block:
         """Add a block to the save."""
