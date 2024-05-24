@@ -243,7 +243,7 @@ def importSave(string: str, snapToGrid: bool = True) -> Save:
         blocks.append(
             newSave.addBlock(
                 b[0],
-                (b[2], b[3], b[4]),
+                (b[2] or 0, b[3] or 0, b[4] or 0),
                 state=bool(b[1]),
                 properties=b[5],
                 snapToGrid=snapToGrid,
