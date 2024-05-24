@@ -5,6 +5,7 @@ Additional utilities for working with cm2py.
 
 from ..cm2py import *
 
+
 def generateCLA(
     numBits: int,
     *,
