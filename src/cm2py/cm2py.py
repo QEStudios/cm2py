@@ -14,7 +14,7 @@ __email__ = "qestudios17@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.3.8"
+__version__ = "0.3.9"
 
 from uuid import uuid4
 import math
@@ -29,8 +29,8 @@ class Block:
 
     def __init__(self, blockId, pos, state=False, properties=None):
         assert (
-            isinstance(blockId, int) and 0 <= blockId <= 17
-        ), "blockId must be an integer between 0 and 17"
+            isinstance(blockId, int) and 0 <= blockId <= 18
+        ), "blockId must be an integer between 0 and 18"
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
