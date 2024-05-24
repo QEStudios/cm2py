@@ -121,6 +121,12 @@ def test_importSave():
     save = cm2.importSave(string)
 
 
+def test_omittedValues():
+    string = "0,,,,,;0,,1,2,3,;0,0,1,2,,???"
+
+    save = cm2.importSave(string)
+
+
 def test_importSingleBlock():
     string = "0,0,0,0,0,???"
 

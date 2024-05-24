@@ -14,7 +14,7 @@ __email__ = "qestudios17@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.3.7"
+__version__ = "0.3.8"
 
 from uuid import uuid4
 import math
@@ -85,9 +85,9 @@ class Save:
     def addBlock(
         self,
         blockId: int,
-        pos: tuple[float, float, float],
+        pos: tuple[float | int, float | int, float | int],
         state: bool = False,
-        properties: bool = None,
+        properties: list[int | float] | None = None,
         snapToGrid: bool = True,
     ) -> Block:
         """Add a block to the save."""
@@ -243,7 +243,7 @@ def importSave(string: str, snapToGrid: bool = True) -> Save:
         blocks.append(
             newSave.addBlock(
                 b[0],
-                (b[2], b[3], b[4]),
+                (b[2] or 0, b[3] or 0, b[4] or 0),
                 state=bool(b[1]),
                 properties=b[5],
                 snapToGrid=snapToGrid,
