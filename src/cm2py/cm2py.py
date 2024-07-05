@@ -8,13 +8,13 @@ for the Roblox game Circuit Maker 2 by ismellbeef1.
 __author__ = "SKM GEEK"
 __contact__ = "qestudios17@gmail.com"
 __copyright__ = "Copyright 2024, SKM GEEK"
-__date__ = "2024/04/14"
+__date__ = "2024/07/05"
 __deprecated__ = False
 __email__ = "qestudios17@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.3.9"
+__version__ = "0.3.10"
 
 from uuid import uuid4
 import math
