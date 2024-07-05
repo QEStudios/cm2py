@@ -24,6 +24,8 @@ def test_addBlocks():
     save.addBlock(cm2.NODE, (15, 0, 0))
     save.addBlock(cm2.DELAY, (16, 0, 0))
     save.addBlock(cm2.ANTENNA, (17, 0, 0))
+    save.addBlock(cm2.CONDUCTOR_V2, (18, 0, 0))
+    save.addBlock(cm2.LED_MIXER, (19, 0, 0))
 
     save.exportSave()
 
