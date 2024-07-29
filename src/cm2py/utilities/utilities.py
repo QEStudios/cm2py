@@ -184,7 +184,7 @@ def encodeToMemory(
         "mass",
         "massive",
         "huge",
-    ], 'Invalid memory building type. Use "mass","massive",or "huge"'
+    ], 'Invalid memory building type. Use "mass","massive", or "huge"'
 
     code = ""
 
