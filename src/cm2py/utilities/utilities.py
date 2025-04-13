@@ -215,7 +215,7 @@ def encodeToMemory(
                 raise ValueError(
                 f"Data size ({len(data)}) exceeds available memory capacity ({huge_memory_size})."
                 )
-            while huge_memory_size >= len(data):
+            while huge_memory_size > len(data):
                 data.append(0)
             temp = []
             for index in data:
