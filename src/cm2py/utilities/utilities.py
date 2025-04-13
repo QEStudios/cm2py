@@ -188,20 +188,34 @@ def encodeToMemory(
     ], 'Invalid memory building type. Use "mass","massive",or "huge"'
 
     code = ""
-
+    mass_memory_size = 4096
+    massive_memory_size = 4096
+    huge_memory_size = 65536
+    
     if memoryType == "mass":
+        if len(data) > mass_memory_size:
+            raise ValueError(
+            f"Data size ({len(data)}) exceeds available memory capacity ({huge_memory_size})."
+            )
         for v in data:
             code += format(v % 256, "02x")
         code += "00" * (4096 - len(data))
     elif memoryType == "massive":
+        if len(data) > massive_memory_size:
+            raise ValueError(
+            f"Data size ({len(data)}) exceeds available memory capacity ({huge_memory_size})."
+            )
         for v in data:
             code += base64_strings[v & 0x3F]
             code += base64_strings[(v >> 6) & 0x3F]
             code += base64_strings[(v >> 12) & 0x3F]
         code += "AAA" * (4096 - len(data))
     elif memoryType == "huge":
-            huge_memory_size = 2**16
-            while huge_memory_size > len(data):
+            if len(data) > huge_memory_size:
+                raise ValueError(
+                f"Data size ({len(data)}) exceeds available memory capacity ({huge_memory_size})."
+                )
+            while huge_memory_size >= len(data):
                 data.append(0)
             temp = []
             for index in data:
