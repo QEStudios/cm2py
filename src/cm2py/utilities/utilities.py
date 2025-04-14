@@ -171,7 +171,7 @@ def generateDecoder(
     return saveString
 
 
-base64_strings = string.ascii_uppercase + string.ascii_lowercase + string.digits + "+/"
+base64_charset = string.ascii_uppercase + string.ascii_lowercase + string.digits + "+/"
 
 
 def encodeToMemory(
@@ -206,14 +206,14 @@ def encodeToMemory(
             f"Data size ({len(data)}) exceeds available memory capacity of massive memory."
             )
         for v in data:
-            code += base64_strings[v & 0x3F]
-            code += base64_strings[(v >> 6) & 0x3F]
-            code += base64_strings[(v >> 12) & 0x3F]
+            code += base64_charset[v & 0x3F]
+            code += base64_charset[(v >> 6) & 0x3F]
+            code += base64_charset[(v >> 12) & 0x3F]
         code += "AAA" * (4096 - len(data))
     elif memoryType == "huge":
             if len(data) > huge_memory_size:
                 raise ValueError(
-                f"Data size ({len(data)}) exceeds available memory capacity huge memory."
+                f"Data size ({len(data)}) exceeds available memory capacity of huge memory."
                 )
             while huge_memory_size > len(data):
                 data.append(0)
@@ -228,7 +228,7 @@ def encodeToMemory(
             compressed = zlib.compress(byte_data, level=2, wbits=-zlib.MAX_WBITS)
             compressed_b64 = base64.b64encode(compressed)
             code = compressed_b64.decode("utf-8")
-            if code.endswith("=="):
+            if code.endswith("=="): 
                 code = code[:-2]
             elif code.endswith("="):
                 code = code[:-1]
