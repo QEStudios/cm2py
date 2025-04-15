@@ -7,6 +7,7 @@ from ..cm2py import *
 import zlib
 import base64
 
+
 def generateCLA(
     numBits: int,
     *,
@@ -191,11 +192,11 @@ def encodeToMemory(
     mass_memory_size = 4096
     massive_memory_size = 4096
     huge_memory_size = 65536
-    
+
     if memoryType == "mass":
         if len(data) > mass_memory_size:
             raise ValueError(
-            f"Data size ({len(data)}) exceeds available memory capacity of mass memory."
+                f"Data size ({len(data)}) exceeds available memory capacity of mass memory."
             )
         for v in data:
             code += format(v % 256, "02x")
@@ -203,7 +204,7 @@ def encodeToMemory(
     elif memoryType == "massive":
         if len(data) > massive_memory_size:
             raise ValueError(
-            f"Data size ({len(data)}) exceeds available memory capacity of massive memory."
+                f"Data size ({len(data)}) exceeds available memory capacity of massive memory."
             )
         for v in data:
             code += base64_charset[v & 0x3F]
@@ -211,27 +212,27 @@ def encodeToMemory(
             code += base64_charset[(v >> 12) & 0x3F]
         code += "AAA" * (4096 - len(data))
     elif memoryType == "huge":
-            if len(data) > huge_memory_size:
-                raise ValueError(
+        if len(data) > huge_memory_size:
+            raise ValueError(
                 f"Data size ({len(data)}) exceeds available memory capacity of huge memory."
-                )
-            while huge_memory_size > len(data):
-                data.append(0)
-            temp = []
-            for index in data:
-                bit1 = index&0xff
-                bit2 = index>>8
-                temp.append(bit1)
-                temp.append(bit2)
-            data = temp 
-            byte_data = bytes(data)
-            compressed = zlib.compress(byte_data, level=2, wbits=-zlib.MAX_WBITS)
-            compressed_b64 = base64.b64encode(compressed)
-            code = compressed_b64.decode("utf-8")
-            if code.endswith("=="): 
-                code = code[:-2]
-            elif code.endswith("="):
-                code = code[:-1]
+            )
+        while huge_memory_size > len(data):
+            data.append(0)
+        temp = []
+        for index in data:
+            bit1 = index & 0xFF
+            bit2 = index >> 8
+            temp.append(bit1)
+            temp.append(bit2)
+        data = temp
+        byte_data = bytes(data)
+        compressed = zlib.compress(byte_data, level=2, wbits=-zlib.MAX_WBITS)
+        compressed_b64 = base64.b64encode(compressed)
+        code = compressed_b64.decode("utf-8")
+        if code.endswith("=="):
+            code = code[:-2]
+        elif code.endswith("="):
+            code = code[:-1]
     return code
 
 
