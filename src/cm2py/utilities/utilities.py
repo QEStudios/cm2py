@@ -4,7 +4,8 @@ Additional utilities for working with cm2py.
 """
 
 from ..cm2py import *
-
+import zlib
+import base64
 
 def generateCLA(
     numBits: int,
@@ -170,7 +171,7 @@ def generateDecoder(
     return saveString
 
 
-base64 = string.ascii_uppercase + string.ascii_lowercase + string.digits + "+/"
+base64_strings = string.ascii_uppercase + string.ascii_lowercase + string.digits + "+/"
 
 
 def encodeToMemory(
@@ -194,15 +195,29 @@ def encodeToMemory(
         code += "00" * (4096 - len(data))
     elif memoryType == "massive":
         for v in data:
-            code += base64[v & 0x3F]
-            code += base64[(v >> 6) & 0x3F]
-            code += base64[(v >> 12) & 0x3F]
+            code += base64_strings[v & 0x3F]
+            code += base64_strings[(v >> 6) & 0x3F]
+            code += base64_strings[(v >> 12) & 0x3F]
         code += "AAA" * (4096 - len(data))
     elif memoryType == "huge":
-        raise (
-            NotImplementedError,
-            "Huge Memory uses full utf8 to represent the values, which don't work well with Roblox yet. When the format gets updated or full utf8 is supported, this function will be updated.",
-        )
+            huge_memory_size = 65535
+            while huge_memory_size > len(data):
+                data.append(0)
+            temp = []
+            for index in data:
+                bit1 = index&0xff
+                bit2 = index>>8
+                temp.append(bit1)
+                temp.append(bit2)
+            data = temp 
+            byte_data = bytes(data)
+            compressed = zlib.compress(byte_data, level=2, wbits=-zlib.MAX_WBITS)
+            compressed_b64 = base64.b64encode(compressed)
+            code = compressed_b64.decode("utf-8")
+            if code.endswith("=="):
+                code = code[:-2]
+            elif code.endswith("="):
+                code = code[:-1]
     return code
 
 
