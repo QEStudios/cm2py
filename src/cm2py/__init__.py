@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 # Pre-defined blockId definitions
 NOR = 0
 AND = 1
@@ -15,6 +16,11 @@ XNOR = 11
 RANDOM = 12
 TEXT = 13
 TILE = 14
+NODE = 15
+DELAY = 16
+ANTENNA = 17
+CONDUCTOR_V2 = 18
+LED_MIXER = 19
 
 NORTH = [0, 0, -1, 0, 1, 0, 1, 0, 0]
 
@@ -23,6 +29,5 @@ EAST = [-1, 0, 0, 0, 1, 0, 0, 0, -1]
 SOUTH = [0, 0, 1, 0, 1, -0, -1, 0, 0]
 
 WEST = [1, 0, 0, 0, 1, 0, 0, 0, 1]
-
 
 from .cm2py import *
