@@ -1,33 +1,33 @@
 #!/usr/bin/env python3
 
-# Pre-defined blockId definitions
-NOR = 0
-AND = 1
-OR = 2
-XOR = 3
-BUTTON = 4
-FLIPFLOP = 5
-LED = 6
-SOUND = 7
-CONDUCTOR = 8
-CUSTOM = 9
-NAND = 10
-XNOR = 11
-RANDOM = 12
-TEXT = 13
-TILE = 14
-NODE = 15
-DELAY = 16
-ANTENNA = 17
-CONDUCTOR_V2 = 18
-LED_MIXER = 19
+from .enums import BlockType, Direction, BuildingType
 
-NORTH = [0, 0, -1, 0, 1, 0, 1, 0, 0]
+# Explicitly expose BlockTypes so that linters can see them
+NOR = BlockType.NOR
+AND = BlockType.AND
+OR = BlockType.OR
+XOR = BlockType.XOR
+BUTTON = BlockType.BUTTON
+FLIPFLOP = BlockType.FLIPFLOP
+LED = BlockType.LED
+SOUND = BlockType.SOUND
+CONDUCTOR = BlockType.CONDUCTOR
+CUSTOM = BlockType.CUSTOM
+NAND = BlockType.NAND
+XNOR = BlockType.XNOR
+RANDOM = BlockType.RANDOM
+TEXT = BlockType.TEXT
+TILE = BlockType.TILE
+NODE = BlockType.NODE
+DELAY = BlockType.DELAY
+ANTENNA = BlockType.ANTENNA
+CONDUCTOR_V2 = BlockType.CONDUCTOR_V2
+LED_MIXER = BlockType.LED_MIXER
 
-EAST = [-1, 0, 0, 0, 1, 0, 0, 0, -1]
-
-SOUTH = [0, 0, 1, 0, 1, -0, -1, 0, 0]
-
-WEST = [1, 0, 0, 0, 1, 0, 0, 0, 1]
+# Also expose directions
+NORTH = Direction.NORTH
+EAST = Direction.EAST
+SOUTH = Direction.SOUTH
+WEST = Direction.WEST
 
 from .cm2py import *
