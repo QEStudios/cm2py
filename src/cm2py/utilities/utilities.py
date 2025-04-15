@@ -195,7 +195,7 @@ def encodeToMemory(
     if memoryType == "mass":
         if len(data) > mass_memory_size:
             raise ValueError(
-            f"Data size ({len(data)}) exceeds available memory capacity ({huge_memory_size})."
+            f"Data size ({len(data)}) exceeds available memory capacity of mass memory."
             )
         for v in data:
             code += format(v % 256, "02x")
@@ -203,7 +203,7 @@ def encodeToMemory(
     elif memoryType == "massive":
         if len(data) > massive_memory_size:
             raise ValueError(
-            f"Data size ({len(data)}) exceeds available memory capacity ({huge_memory_size})."
+            f"Data size ({len(data)}) exceeds available memory capacity of massive memory."
             )
         for v in data:
             code += base64_strings[v & 0x3F]
@@ -213,7 +213,7 @@ def encodeToMemory(
     elif memoryType == "huge":
             if len(data) > huge_memory_size:
                 raise ValueError(
-                f"Data size ({len(data)}) exceeds available memory capacity ({huge_memory_size})."
+                f"Data size ({len(data)}) exceeds available memory capacity huge memory."
                 )
             while huge_memory_size > len(data):
                 data.append(0)
