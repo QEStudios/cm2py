@@ -24,28 +24,6 @@ import string
 import struct
 
 
-class Building:
-    def __init__(self, pos, rotation):
-        assert (
-            isinstance(pos, (list, tuple))
-            and len(pos) == 3
-            and all(isinstance(coord, (int, float)) for coord in pos)
-        ), "pos must be a 3D tuple of integers or floats"
-
-        assert (
-            isinstance(rotation, (list, tuple))
-            and len(rotation) == 9
-            and all(isinstance(v, (int, float)) for v in rotation)
-        ), "rotation must be a list of 9 numbers"
-
-        self.pos = pos
-        self.x = self.pos[0]
-        self.y = self.pos[1]
-        self.z = self.pos[2]
-        self.rotation = rotation
-        self.blocks = {}
-
-
 class Block:
     __initialised = False
 
@@ -93,6 +71,28 @@ class Connection:
         assert isinstance(target, Block), "target must be a Block object"
         self.source = source
         self.target = target
+
+
+class Building:
+    def __init__(self, pos, rotation):
+        assert (
+            isinstance(pos, (list, tuple))
+            and len(pos) == 3
+            and all(isinstance(coord, (int, float)) for coord in pos)
+        ), "pos must be a 3D tuple of integers or floats"
+
+        assert (
+            isinstance(rotation, (list, tuple))
+            and len(rotation) == 9
+            and all(isinstance(v, (int, float)) for v in rotation)
+        ), "rotation must be a list of 9 numbers"
+
+        self.pos = pos
+        self.x = self.pos[0]
+        self.y = self.pos[1]
+        self.z = self.pos[2]
+        self.rotation = rotation
+        self.blocks = {}
 
 
 class Save:
