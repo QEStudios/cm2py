@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Circuit Maker 2 save generation and manipulation package
+"""Circuit Maker 2 save generation and manipulation package
 
 This module contains utilities to generate and manipulate save strings
 for the Roblox game Circuit Maker 2 by ismellbeef1.
