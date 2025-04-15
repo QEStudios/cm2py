@@ -200,7 +200,7 @@ def encodeToMemory(
             code += base64_strings[(v >> 12) & 0x3F]
         code += "AAA" * (4096 - len(data))
     elif memoryType == "huge":
-            huge_memory_size = 65535
+            huge_memory_size = 2**16
             while huge_memory_size > len(data):
                 data.append(0)
             temp = []
