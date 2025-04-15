@@ -27,15 +27,16 @@ import struct
 class Building:
     def __init__(self, pos, rotation):
         assert (
-            isinstance(pos, tuple)
+            isinstance(pos, (list, tuple))
             and len(pos) == 3
-            and (isinstance(pos[0], float) or isinstance(pos[0], int))
-            and (isinstance(pos[1], float) or isinstance(pos[1], int))
-            and (isinstance(pos[2], float) or isinstance(pos[2], int))
-        ), "pos must be a 3d tuple of integers or floats"
+            and all(isinstance(coord, (int, float)) for coord in pos)
+        ), "pos must be a 3D tuple of integers or floats"
+
         assert (
-            isinstance(rotation, list) and len(rotation) == 9
-        ), "rotation must be a list of length 9"
+            isinstance(rotation, (list, tuple))
+            and len(rotation) == 9
+            and all(isinstance(v, (int, float)) for v in rotation)
+        ), "rotation must be a list of 9 numbers"
 
         self.pos = pos
         self.x = self.pos[0]
