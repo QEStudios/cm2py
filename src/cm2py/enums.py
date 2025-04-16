@@ -44,6 +44,7 @@ class BuildingType(str, Enum):
     KEY_INPUT = "KeyInput"
     LARGE_RGB_DISPLAY = "LargeRGBDisplay"
     MASS_MEMORY = "MassMemory"
+    MASSIVE_MEMORY = "MassiveMemory"
     MULTIPLIER = "Multiplier"
     N_TRANSISTOR = "N-Transistor"
     P_TRANSISTOR = "P-Transistor"
