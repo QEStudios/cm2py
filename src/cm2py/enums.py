@@ -56,3 +56,8 @@ class BuildingType(str, Enum):
     TEXT_CONSOLE = "TextConsole"
     DIVIDER_32_BIT = "32BitDivider"
     MULTIPLIER_32_BIT = "32BitMultiplier"
+
+
+class Directions(str, Enum):
+    INPUT = "INPUT"
+    OUTPUT = "OUTPUT"
