@@ -19,6 +19,7 @@ __version__ = "0.4.0.dev0"
 from uuid import uuid4
 import math
 import regex as re
+from . import enums
 from typing import Literal, Callable
 import string
 import struct
@@ -28,9 +29,6 @@ class Block:
     __initialised = False
 
     def __init__(self, blockId, pos, state=False, properties=None):
-        assert (
-            isinstance(blockId, int) and 0 <= blockId <= 19
-        ), "blockId must be an integer between 0 and 19"
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
@@ -42,7 +40,7 @@ class Block:
         assert (
             isinstance(properties, list) or properties is None
         ), "properties must be a list of numbers, or None."
-        self.blockId = blockId
+        self.blockId = self._normalise_block_type(blockId)
         self.pos = pos
         self.x = self.pos[0]
         self.y = self.pos[1]
@@ -63,6 +61,15 @@ class Block:
             self.__dict__["z"] = self.pos[2]
         elif name in ["x", "y", "z"]:
             self.__dict__["pos"] = (self.x, self.y, self.z)
+
+    @staticmethod
+    def _normalise_block_type(value):
+        if isinstance(value, enums.BlockType):
+            return value
+        try:
+            return enums.BlockType(value)
+        except ValueError:
+            raise AssertionError(f"Invalid block id: {value}")
 
 
 class Connection:
