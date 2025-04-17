@@ -9,7 +9,7 @@ authors = [{ name = "SKM GEEK", email = "qestudios17@gmail.com" }]
 description = "Circuit Maker 2 save generation and manipulation package"
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: MIT License",
