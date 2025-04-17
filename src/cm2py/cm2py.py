@@ -28,7 +28,13 @@ import struct
 class Block:
     __initialised = False
 
-    def __init__(self, blockId, pos, state=False, properties=None):
+    def __init__(
+        self,
+        blockId: int,
+        pos: tuple[float | int, float | int, float | int],
+        state: bool = False,
+        properties: list | None = None,
+    ):
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
@@ -73,7 +79,7 @@ class Block:
 
 
 class Connection:
-    def __init__(self, source, target):
+    def __init__(self, source: Block, target: Block):
         assert isinstance(source, Block), "source must be a Block object"
         assert isinstance(target, Block), "target must be a Block object"
         self.source = source
