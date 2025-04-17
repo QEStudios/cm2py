@@ -58,6 +58,7 @@ class BuildingType(str, Enum):
     MULTIPLIER_32_BIT = "32BitMultiplier"
 
 
-class BuildingBlockMode(str, Enum):
+class IOType(str, Enum):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
+    BIDIRECTIONAL = "BIDIRECTIONAL"
