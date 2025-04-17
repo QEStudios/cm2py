@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Circuit Maker 2 save generation and manipulation package
+"""Circuit Maker 2 save generation and manipulation package
 
 This module contains utilities to generate and manipulate save strings
 for the Roblox game Circuit Maker 2 by ismellbeef1.
@@ -7,14 +7,14 @@ for the Roblox game Circuit Maker 2 by ismellbeef1.
 
 __author__ = "SKM GEEK"
 __contact__ = "qestudios17@gmail.com"
-__copyright__ = "Copyright 2024, SKM GEEK"
-__date__ = "2024/07/05"
+__copyright__ = "Copyright 2025, SKM GEEK"
+__date__ = "2025/03/17"
 __deprecated__ = False
 __email__ = "qestudios17@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "SKM GEEK"
 __status__ = "Production"
-__version__ = "0.3.10"
+__version__ = "0.3.11"
 
 from uuid import uuid4
 import math
@@ -211,9 +211,10 @@ def validateSave(string: str) -> re.Match | None:
     return re.match(regex, string)
 
 
-def importSave(string: str, snapToGrid: bool = True) -> Save:
+def importSave(string: str, snapToGrid: bool = True, validate: bool = True) -> Save:
     """Import a Circuit Maker 2 save string as a save."""
-    assert validateSave(string), "invalid save string"
+    if validate == True:
+        assert validateSave(string), "invalid save string"
 
     newSave = Save()
 
