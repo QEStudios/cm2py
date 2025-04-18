@@ -183,3 +183,25 @@ def test_buildingBlockObjectCreation():
 
         with pytest.raises(AttributeError):
             block.properties = [randint(-100, 100) for i in range(5)]
+
+
+def test_buildingCreatesCorrectBlocks():
+    for buildingType in building_definitions.definitions.keys():
+        for i in range(10):
+            print(buildingType)
+            buildingPos = tuple([randint(-100, 100) for i in range(3)])
+
+            building = cm2.Building(buildingType, buildingPos, enums.Rotation.NORTH)
+
+            buildingDefinition = building_definitions.definitions[buildingType]
+
+            for i, block in enumerate(building.blocks.values()):
+                definitionBlock = buildingDefinition.blocks[i]
+                assert block.parentBuilding == building
+                assert block.posOffset == definitionBlock[0]
+                assert block.IOType == definitionBlock[1]
+                assert block.pos == tuple(
+                    [sum(v) for v in zip(definitionBlock[0], buildingPos)]
+                )
+                assert block.blockId == cm2.CUSTOM
+                assert block.state == False
