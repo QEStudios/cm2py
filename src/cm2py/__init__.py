@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from .enums import BlockType, Direction, BuildingType
+from .enums import BlockType, Rotation, BuildingType
 
 # Explicitly expose BlockTypes so that linters can see them
 NOR = BlockType.NOR
@@ -24,10 +24,10 @@ ANTENNA = BlockType.ANTENNA
 CONDUCTOR_V2 = BlockType.CONDUCTOR_V2
 LED_MIXER = BlockType.LED_MIXER
 
-# Also expose directions
-NORTH = Direction.NORTH
-EAST = Direction.EAST
-SOUTH = Direction.SOUTH
-WEST = Direction.WEST
+# Also expose rotations
+NORTH = Rotation.NORTH
+EAST = Rotation.EAST
+SOUTH = Rotation.SOUTH
+WEST = Rotation.WEST
 
 from .cm2py import *

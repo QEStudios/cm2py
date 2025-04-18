@@ -24,7 +24,7 @@ class BlockType(int, Enum):
     LED_MIXER = 19
 
 
-class Direction:
+class Rotation:
     NORTH = [0, 0, -1, 0, 1, 0, 1, 0, 0]
     EAST = [-1, 0, 0, 0, 1, 0, 0, 0, -1]
     SOUTH = [0, 0, 1, 0, 1, -0, -1, 0, 0]
