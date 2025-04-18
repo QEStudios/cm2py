@@ -179,4 +179,4 @@ def test_buildingBlockObjectCreation():
         block.pos = (2, 3, 4)
 
     with pytest.raises(AttributeError):
-        block.properties = ["test"]
+        block.properties = [1, 2, 3]
