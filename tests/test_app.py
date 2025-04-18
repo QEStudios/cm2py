@@ -160,7 +160,7 @@ def test_buildingBlockObjectCreation():
     )
 
     block = cm2.BuildingBlock(
-        enums.IOType.INPUT, blockOffset, parent_building=building, state=False
+        enums.IOType.INPUT, blockOffset, parentBuilding=building, state=False
     )
 
     assert (

@@ -46,7 +46,7 @@ class Block:
         assert (
             isinstance(properties, list) or properties is None
         ), "properties must be a list of numbers, or None."
-        self.blockId = self._normalise_block_type(blockId)
+        self.blockId = self._normaliseBlockType(blockId)
         self.pos = pos
         self.x = self.pos[0]
         self.y = self.pos[1]
@@ -69,7 +69,7 @@ class Block:
             self.__dict__["pos"] = (self.x, self.y, self.z)
 
     @staticmethod
-    def _normalise_block_type(value):
+    def _normaliseBlockType(value):
         if isinstance(value, enums.BlockType):
             return value
         try:
@@ -112,13 +112,13 @@ class Building:
             and all(isinstance(v, (int, float)) for v in rotation)
         ), "rotation must be a list of 9 numbers"
 
-        self.buildingType = self._normalise_building_type(buildingType)
+        self.buildingType = self._normaliseBuildingType(buildingType)
         self.pos = pos
         self.x = self.pos[0]
         self.y = self.pos[1]
         self.z = self.pos[2]
         self.rotation = rotation
-        self.blocks = self._generate_blocks()
+        self.blocks = self._generateBlocks()
         self.data = ""
 
     def __setattr__(self, name, value):
@@ -130,11 +130,11 @@ class Building:
         elif name in ["x", "y", "z"]:
             self.__dict__["pos"] = (self.x, self.y, self.z)
 
-    def _generate_blocks(self):
+    def _generateBlocks(self):
         return {}
 
     @staticmethod
-    def _normalise_building_type(value):
+    def _normaliseBuildingType(value):
         if isinstance(value, enums.BuildingType):
             return value
         try:
@@ -149,20 +149,20 @@ class BuildingBlock(Block):
     def __init__(
         self,
         IOType: enums.IOType,
-        pos_offset: tuple[float | int, float | int, float | int],
-        parent_building: Building,
+        posOffset: tuple[float | int, float | int, float | int],
+        parentBuilding: Building,
         state: bool = False,
     ):
-        self.parent_building = parent_building
-        self.pos_offset = pos_offset
+        self.parentBuilding = parentBuilding
+        self.posOffset = posOffset
         self.IOType = IOType
-        _pos = self._calculate_pos()
+        _pos = self._calculatePos()
         super().__init__(enums.BlockType.CUSTOM, _pos, state)
         self.__initialised = True
 
     @property
     def pos(self):
-        return self._calculate_pos()
+        return self._calculatePos()
 
     @property
     def x(self):
@@ -176,12 +176,10 @@ class BuildingBlock(Block):
     def z(self):
         return self.pos[2]
 
-    def _calculate_pos(self):
-        if self.parent_building:
-            return tuple(
-                a + b for a, b in zip(self.parent_building.pos, self.pos_offset)
-            )
-        return self.pos_offset
+    def _calculatePos(self):
+        if self.parentBuilding:
+            return tuple(a + b for a, b in zip(self.parentBuilding.pos, self.posOffset))
+        return self.posOffset
 
     def __setattr__(self, name, value):
         # Prevent setting any attributes except for the state
