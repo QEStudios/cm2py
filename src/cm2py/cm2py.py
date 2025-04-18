@@ -19,7 +19,7 @@ __version__ = "0.4.0.dev0"
 from uuid import uuid4
 import math
 import regex as re
-from . import enums
+from . import enums, building_definitions
 from typing import Literal, Callable
 import string
 import struct
@@ -131,7 +131,20 @@ class Building:
             self.__dict__["pos"] = (self.x, self.y, self.z)
 
     def _generateBlocks(self):
-        return {}
+        assert self.buildingType in building_definitions.definitions
+
+        blocks = {}
+
+        definition = building_definitions.definitions[self.buildingType]
+        for block in definition.blocks:
+            pos = block[0]
+            IOType = block[1]
+            blockObject = BuildingBlock(
+                IOType=IOType, posOffset=pos, parentBuilding=self
+            )
+            blocks[blockObject.uuid] = blockObject
+
+        return blocks
 
     @staticmethod
     def _normaliseBuildingType(value):
