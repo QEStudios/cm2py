@@ -152,6 +152,12 @@ def test_buildingObjectCreation():
             and building.z == buildingPos[2]
         )
 
+        with pytest.raises(AssertionError):
+            building.buildingType = enums.BuildingType.TEXT_CONSOLE
+
+        with pytest.raises(AssertionError):
+            building.blocks = {}
+
 
 def test_buildingBlockObjectCreation():
     for i in range(100):

@@ -87,6 +87,8 @@ class Connection:
 
 
 class Building:
+    __initialised = False
+
     def __init__(
         self,
         buildingType: enums.BuildingType,
@@ -121,7 +123,16 @@ class Building:
         self.blocks = self._generateBlocks()
         self.data = ""
 
+        self.__initialised = True
+
     def __setattr__(self, name, value):
+        if not self.__initialised:
+            self.__dict__[name] = value
+            return
+
+        assert name != "buildingType", "Building type cannot be changed"
+        assert name != "blocks", "Buildings cannot be re-assinged blocks"
+
         self.__dict__[name] = value
         if name == "pos":
             self.__dict__["x"] = self.pos[0]
