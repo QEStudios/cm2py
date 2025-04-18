@@ -131,7 +131,7 @@ class Building:
             return
 
         assert name != "buildingType", "Building type cannot be changed"
-        assert name != "blocks", "Buildings cannot be re-assinged blocks"
+        assert name != "blocks", "Buildings cannot be re-assigned blocks"
 
         self.__dict__[name] = value
         if name == "pos":
