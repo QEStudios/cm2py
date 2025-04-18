@@ -214,7 +214,7 @@ class Save:
         if snapToGrid:
             newBlock = Block(
                 blockId,
-                tuple([int(math.floor(i)) for i in pos]),
+                (math.floor(pos[0]), math.floor(pos[1]), math.floor(pos[2])),
                 state=state,
                 properties=properties,
             )
@@ -343,19 +343,15 @@ def importSave(string: str, snapToGrid: bool = True, validate: bool = True) -> S
     connectionString = sections[1].split(";")
 
     blockVals = [
-        [
-            (
-                None
-                if not v
-                else (
-                    [float(a) for a in v.split("+")]
-                    if "+" in v or p == 5
-                    else float(v) if (v and p != 0) else int(v)
-                )
-            )
-            for p, v in enumerate(i.split(","))
-        ]
-        for i in blockString
+        (
+            int(p[0]),
+            0 if not p[1] else int(p[1]),
+            (None if not p[2] else int(p[2]) if p[2].isdigit() else float(p[2])),
+            (None if not p[3] else int(p[3]) if p[3].isdigit() else float(p[3])),
+            (None if not p[4] else int(p[4]) if p[4].isdigit() else float(p[4])),
+            (None if not p[5] else [float(a) for a in p[5].split("+")]),
+        )
+        for p in (b.split(",") for b in blockString)
     ]
     connections = [[int(v) for v in i.split(",")] for i in connectionString if i]
 
