@@ -1,7 +1,8 @@
 import pytest
 
 from src import cm2py as cm2
-from src.cm2py import enums
+from src.cm2py import enums, building_definitions
+from random import randint
 
 
 def test_addBlocks():
@@ -137,46 +138,48 @@ def test_importSingleBlock():
 
 
 def test_buildingObjectCreation():
-    buildingPos = (3, 4, 5)
+    for i in range(100):
+        buildingPos = tuple([randint(-100, 100) for i in range(3)])
 
-    building = cm2.Building(
-        enums.BuildingType.MASS_MEMORY, buildingPos, enums.Rotation.NORTH
-    )
+        building = cm2.Building(
+            enums.BuildingType.MASS_MEMORY, buildingPos, enums.Rotation.NORTH
+        )
 
-    assert (
-        building.pos == buildingPos
-        and building.x == buildingPos[0]
-        and building.y == buildingPos[1]
-        and building.z == buildingPos[2]
-    )
+        assert (
+            building.pos == buildingPos
+            and building.x == buildingPos[0]
+            and building.y == buildingPos[1]
+            and building.z == buildingPos[2]
+        )
 
 
 def test_buildingBlockObjectCreation():
-    buildingPos = (3, 4, 5)
-    blockOffset = (1, 2, 3)
+    for i in range(100):
+        buildingPos = tuple([randint(-100, 100) for i in range(3)])
+        blockOffset = tuple([randint(-100, 100) for i in range(3)])
 
-    building = cm2.Building(
-        enums.BuildingType.MASS_MEMORY, buildingPos, enums.Rotation.NORTH
-    )
+        building = cm2.Building(
+            enums.BuildingType.MASS_MEMORY, buildingPos, enums.Rotation.NORTH
+        )
 
-    block = cm2.BuildingBlock(
-        enums.IOType.INPUT, blockOffset, parentBuilding=building, state=False
-    )
+        block = cm2.BuildingBlock(
+            enums.IOType.INPUT, blockOffset, parentBuilding=building, state=False
+        )
 
-    assert (
-        block.pos == tuple([sum(x) for x in zip(buildingPos, blockOffset)])
-        and block.x == buildingPos[0] + blockOffset[0]
-        and block.y == buildingPos[1] + blockOffset[1]
-        and block.z == buildingPos[2] + blockOffset[2]
-    )
-    assert block.state == False
+        assert (
+            block.pos == tuple([sum(x) for x in zip(buildingPos, blockOffset)])
+            and block.x == buildingPos[0] + blockOffset[0]
+            and block.y == buildingPos[1] + blockOffset[1]
+            and block.z == buildingPos[2] + blockOffset[2]
+        )
+        assert block.state == False
 
-    block.state = True
+        block.state = True
 
-    assert block.state == True
+        assert block.state == True
 
-    with pytest.raises(AttributeError):
-        block.pos = (2, 3, 4)
+        with pytest.raises(AttributeError):
+            block.pos = tuple([randint(-100, 100) for i in range(3)])
 
-    with pytest.raises(AttributeError):
-        block.properties = [1, 2, 3]
+        with pytest.raises(AttributeError):
+            block.properties = [randint(-100, 100) for i in range(5)]
