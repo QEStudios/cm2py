@@ -1,6 +1,7 @@
 import pytest
 
 from src import cm2py as cm2
+from src.cm2py import enums
 
 
 def test_addBlocks():
@@ -133,3 +134,49 @@ def test_importSingleBlock():
     string = "0,0,0,0,0,???"
 
     save = cm2.importSave(string)
+
+
+def test_buildingObjectCreation():
+    buildingPos = (3, 4, 5)
+
+    building = cm2.Building(
+        enums.BuildingType.MASS_MEMORY, buildingPos, enums.Rotation.NORTH
+    )
+
+    assert (
+        building.pos == buildingPos
+        and building.x == buildingPos[0]
+        and building.y == buildingPos[1]
+        and building.z == buildingPos[2]
+    )
+
+
+def test_buildingBlockObjectCreation():
+    buildingPos = (3, 4, 5)
+    blockOffset = (1, 2, 3)
+
+    building = cm2.Building(
+        enums.BuildingType.MASS_MEMORY, buildingPos, enums.Rotation.NORTH
+    )
+
+    block = cm2.BuildingBlock(
+        enums.IOType.INPUT, blockOffset, parent_building=building, state=False
+    )
+
+    assert (
+        block.pos == tuple([sum(x) for x in zip(buildingPos, blockOffset)])
+        and block.x == buildingPos[0] + blockOffset[0]
+        and block.y == buildingPos[1] + blockOffset[1]
+        and block.z == buildingPos[2] + blockOffset[2]
+    )
+    assert block.state == False
+
+    block.state = True
+
+    assert block.state == True
+
+    with pytest.raises(AttributeError):
+        block.pos = (2, 3, 4)
+
+    with pytest.raises(AttributeError):
+        block.properties = ["test"]

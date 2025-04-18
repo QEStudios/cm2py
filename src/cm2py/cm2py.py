@@ -87,7 +87,19 @@ class Connection:
 
 
 class Building:
-    def __init__(self, pos, rotation):
+    def __init__(
+        self,
+        buildingType: enums.BuildingType,
+        pos: tuple[float | int, float | int, float | int],
+        # fmt: off
+        rotation: tuple[
+            float | int, float | int, float | int,
+            float | int, float | int, float | int,
+            float | int, float | int, float | int,
+        ],
+        # fmt: on
+        data: str = "",
+    ):
         assert (
             isinstance(pos, (list, tuple))
             and len(pos) == 3
@@ -100,12 +112,85 @@ class Building:
             and all(isinstance(v, (int, float)) for v in rotation)
         ), "rotation must be a list of 9 numbers"
 
+        self.buildingType = self._normalise_building_type(buildingType)
         self.pos = pos
         self.x = self.pos[0]
         self.y = self.pos[1]
         self.z = self.pos[2]
         self.rotation = rotation
-        self.blocks = {}
+        self.blocks = self._generate_blocks()
+        self.data = ""
+
+    def __setattr__(self, name, value):
+        self.__dict__[name] = value
+        if name == "pos":
+            self.__dict__["x"] = self.pos[0]
+            self.__dict__["y"] = self.pos[1]
+            self.__dict__["z"] = self.pos[2]
+        elif name in ["x", "y", "z"]:
+            self.__dict__["pos"] = (self.x, self.y, self.z)
+
+    def _generate_blocks(self):
+        return {}
+
+    @staticmethod
+    def _normalise_building_type(value):
+        if isinstance(value, enums.BuildingType):
+            return value
+        try:
+            return enums.BuildingType(value)
+        except ValueError:
+            raise AssertionError(f"Invalid building type: {value}")
+
+
+class BuildingBlock(Block):
+    __initialised = False
+
+    def __init__(
+        self,
+        IOType: enums.IOType,
+        pos_offset: tuple[float | int, float | int, float | int],
+        parent_building: Building,
+        state: bool = False,
+    ):
+        self.parent_building = parent_building
+        self.pos_offset = pos_offset
+        self.IOType = IOType
+        _pos = self._calculate_pos()
+        super().__init__(enums.BlockType.CUSTOM, _pos, state)
+        self.__initialised = True
+
+    @property
+    def pos(self):
+        return self._calculate_pos()
+
+    @property
+    def x(self):
+        return self.pos[0]
+
+    @property
+    def y(self):
+        return self.pos[1]
+
+    @property
+    def z(self):
+        return self.pos[2]
+
+    def _calculate_pos(self):
+        if self.parent_building:
+            return tuple(
+                a + b for a, b in zip(self.parent_building.pos, self.pos_offset)
+            )
+        return self.pos_offset
+
+    def __setattr__(self, name, value):
+        # Prevent setting any attributes except for the state
+        if name not in ["state"]:
+            if self.__initialised:
+                raise AttributeError(
+                    f"'{self.__class__.__name__}' object attribute '{name}' is immutable."
+                )
+        super().__setattr__(name, value)
 
 
 class Save:
