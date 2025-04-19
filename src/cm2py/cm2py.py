@@ -149,8 +149,8 @@ class Building:
 
         definition = building_definitions.definitions[self.buildingType]
         for i, block in enumerate(definition.blocks):
-            pos = block[0]
-            IOType = block[1]
+            pos = block.pos
+            IOType = block.ioType
             blockObject = BuildingBlock(
                 IOType=IOType, posOffset=pos, parentBuilding=self, index=i
             )

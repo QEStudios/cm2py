@@ -208,10 +208,10 @@ def test_buildingCreatesCorrectBlocks():
             for i, block in enumerate(building._blocks):
                 definitionBlock = buildingDefinition.blocks[i]
                 assert block.parentBuilding == building
-                assert block.posOffset == definitionBlock[0]
-                assert block.IOType == definitionBlock[1]
+                assert block.posOffset == definitionBlock.pos
+                assert block.IOType == definitionBlock.ioType
                 assert block.pos == tuple(
-                    [sum(v) for v in zip(definitionBlock[0], buildingPos)]
+                    [sum(v) for v in zip(definitionBlock.pos, buildingPos)]
                 )
                 assert block.blockId == cm2.CUSTOM
                 assert block.state == False
