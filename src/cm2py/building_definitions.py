@@ -227,13 +227,13 @@ definitions = {
     BuildingType.GRAPH: BuildingProperties(
         blocks=[
             BP((-4, 0, 4), INPUT),  # Input [bit 7]
-            BP((-3, 0, 4), INPUT),  # Input [bit 7]
-            BP((-2, 0, 4), INPUT),  # Input [bit 7]
-            BP((-1, 0, 4), INPUT),  # Input [bit 7]
-            BP((0, 0, 4), INPUT),  # Input [bit 7]
-            BP((1, 0, 4), INPUT),  # Input [bit 7]
-            BP((2, 0, 4), INPUT),  # Input [bit 7]
-            BP((3, 0, 4), INPUT),  # Input [bit 7]
+            BP((-3, 0, 4), INPUT),  # Input [bit 6]
+            BP((-2, 0, 4), INPUT),  # Input [bit 5]
+            BP((-1, 0, 4), INPUT),  # Input [bit 4]
+            BP((0, 0, 4), INPUT),  # Input [bit 3]
+            BP((1, 0, 4), INPUT),  # Input [bit 2]
+            BP((2, 0, 4), INPUT),  # Input [bit 1]
+            BP((3, 0, 4), INPUT),  # Input [bit 0]
         ]
     ),
     BuildingType.HUGE_MEMORY: BuildingProperties(
@@ -588,16 +588,16 @@ definitions = {
     ),
     BuildingType.N_TRANSISTOR: BuildingProperties(
         blocks=[
-            BP((1, 0, 0), BIDIRECTIONAL),  # Right
-            BP((0, 0, 1), INPUT),  # Bottom
-            BP((-1, 0, 0), BIDIRECTIONAL),  # Left
+            BP((1, 0, 0), BIDIRECTIONAL),  # Drain (right)
+            BP((0, 0, 1), INPUT),  # Gate (bottom)
+            BP((-1, 0, 0), BIDIRECTIONAL),  # Source (left)
         ]
     ),
     BuildingType.P_TRANSISTOR: BuildingProperties(
         blocks=[
-            BP((1, 0, 0), BIDIRECTIONAL),  # Right
-            BP((0, 0, 1), INPUT),  # Bottom
-            BP((-1, 0, 0), BIDIRECTIONAL),  # Left
+            BP((1, 0, 0), BIDIRECTIONAL),  # Drain (right)
+            BP((0, 0, 1), INPUT),  # Gate (bottom)
+            BP((-1, 0, 0), BIDIRECTIONAL),  # Source (left)
         ]
     ),
     BuildingType.PIXEL_DISPLAY: BuildingProperties(
