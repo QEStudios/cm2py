@@ -122,6 +122,7 @@ class Building:
         self.rotation = rotation
         self.blocks = self._generateBlocks()
         self.data = ""
+        self.uuid = str(uuid4())
 
         self.__initialised = True
 
