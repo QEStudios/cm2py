@@ -243,15 +243,10 @@ class Save:
         snapToGrid: bool = True,
     ) -> Block:
         """Add a block to the save."""
+        posToUse = pos
         if snapToGrid:
-            newBlock = Block(
-                blockId,
-                (math.floor(pos[0]), math.floor(pos[1]), math.floor(pos[2])),
-                state=state,
-                properties=properties,
-            )
-        else:
-            newBlock = Block(blockId, pos, state=state, properties=properties)
+            posToUse = (math.floor(pos[0]), math.floor(pos[1]), math.floor(pos[2]))
+        newBlock = Block(blockId, posToUse, state=state, properties=properties)
         self.blocks[newBlock.uuid] = newBlock
         self.blockCount += 1
         return newBlock
