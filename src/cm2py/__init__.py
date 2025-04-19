@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from .enums import BlockType, Rotation, BuildingType
+from .enums import BlockType, Rotation, BuildingType, IOType
 
 # Explicitly expose BlockTypes so that linters can see them
 NOR = BlockType.NOR
