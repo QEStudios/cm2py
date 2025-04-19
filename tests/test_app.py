@@ -156,7 +156,7 @@ def test_buildingObjectCreation():
             building.buildingType = enums.BuildingType.TEXT_CONSOLE
 
         with pytest.raises(AssertionError):
-            building.blocks = {}
+            building.blocks = []
 
 
 def test_buildingBlockObjectCreation():
@@ -169,7 +169,11 @@ def test_buildingBlockObjectCreation():
         )
 
         block = cm2.BuildingBlock(
-            enums.IOType.INPUT, blockOffset, parentBuilding=building, state=False
+            enums.IOType.INPUT,
+            blockOffset,
+            parentBuilding=building,
+            state=False,
+            index=0,
         )
 
         assert (
@@ -201,7 +205,7 @@ def test_buildingCreatesCorrectBlocks():
 
             buildingDefinition = building_definitions.definitions[buildingType]
 
-            for i, block in enumerate(building.blocks.values()):
+            for i, block in enumerate(building.blocks):
                 definitionBlock = buildingDefinition.blocks[i]
                 assert block.parentBuilding == building
                 assert block.posOffset == definitionBlock[0]
@@ -211,6 +215,7 @@ def test_buildingCreatesCorrectBlocks():
                 )
                 assert block.blockId == cm2.CUSTOM
                 assert block.state == False
+                assert block.index == i
 
 
 def test_addBuilding():

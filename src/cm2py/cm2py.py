@@ -145,16 +145,16 @@ class Building:
     def _generateBlocks(self):
         assert self.buildingType in building_definitions.definitions
 
-        blocks = {}
+        blocks = []
 
         definition = building_definitions.definitions[self.buildingType]
-        for block in definition.blocks:
+        for i, block in enumerate(definition.blocks):
             pos = block[0]
             IOType = block[1]
             blockObject = BuildingBlock(
-                IOType=IOType, posOffset=pos, parentBuilding=self
+                IOType=IOType, posOffset=pos, parentBuilding=self, index=i
             )
-            blocks[blockObject.uuid] = blockObject
+            blocks.append(blockObject)
 
         return blocks
 
@@ -176,6 +176,7 @@ class BuildingBlock(Block):
         IOType: enums.IOType,
         posOffset: Position,
         parentBuilding: Building,
+        index: int,
         state: bool = False,
     ):
         assert isinstance(IOType, enums.IOType)
@@ -191,6 +192,7 @@ class BuildingBlock(Block):
         self.parentBuilding = parentBuilding
         self.posOffset = posOffset
         self.IOType = IOType
+        self.index = index
         _pos = self._calculatePos()
         super().__init__(enums.BlockType.CUSTOM, _pos, state)
         self.__initialised = True
