@@ -211,3 +211,13 @@ def test_buildingCreatesCorrectBlocks():
                 )
                 assert block.blockId == cm2.CUSTOM
                 assert block.state == False
+
+
+def test_addBuilding():
+    save = cm2.Save()
+    for buildingType in building_definitions.definitions.keys():
+        for i in range(10):
+            print(buildingType)
+            buildingPos = tuple([randint(-100, 100) for i in range(3)])
+
+            building = save.addBuilding(buildingType, buildingPos, enums.Rotation.NORTH)

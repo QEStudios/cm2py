@@ -232,8 +232,10 @@ class Save:
     def __init__(self):
         self.blocks = {}
         self.connections = {}
+        self.buildings = {}
         self.blockCount = 0
         self.connectionCount = 0
+        self.buildingCount = 0
 
     def addBlock(
         self,
@@ -261,6 +263,25 @@ class Save:
             self.connections[newConnection.target.uuid] = [newConnection]
         self.connectionCount += 1
         return newConnection
+
+    def addBuilding(
+        self,
+        buildingType: enums.BuildingType,
+        pos: Position,
+        # fmt: off
+        rotation: tuple[
+            float | int, float | int, float | int,
+            float | int, float | int, float | int,
+            float | int, float | int, float | int,
+        ],
+        # fmt: on
+        data: str = "",
+    ):
+        """Add a building to the save."""
+        newBuilding = Building(buildingType, pos, rotation, data)
+        self.buildings[newBuilding.uuid] = newBuilding
+        self.buildingCount += 1
+        return newBuilding
 
     def exportSave(self) -> str:
         """Export the save to a Circuit Maker 2 save string."""
