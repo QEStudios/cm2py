@@ -697,10 +697,6 @@ definitions = {
             BP((-1, 0, 18), INPUT),  # R [bit 2]
             BP((0, 0, 18), INPUT),  # R [bit 1]
             BP((1, 0, 18), INPUT),  # R [bit 0]
-            BP((3, 0, 18), INPUT),  # G [bit 3]
-            BP((4, 0, 18), INPUT),  # G [bit 2]
-            BP((5, 0, 18), INPUT),  # G [bit 1]
-            BP((6, 0, 18), INPUT),  # G [bit 0]
             BP((13, 0, 18), INPUT),  # Reset
             BP((14, 0, 18), INPUT),  # Write
             BP((-14, 0, 18), INPUT),  # X [bit 4]
