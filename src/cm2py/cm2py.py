@@ -121,7 +121,7 @@ class Building:
         self.z = self.pos[2]
         self.rotation = rotation
         self._blocks = self._generateBlocks()
-        self.data = ""
+        self.data = data
         self.uuid = str(uuid4())
 
         self.__initialised = True
