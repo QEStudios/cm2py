@@ -304,11 +304,56 @@ class Save:
         connectionStrings: list[str] = []
         for c in self.connections.values():
             for n in c:
+                if n.source.uuid not in self.blocks or n.target.uuid not in self.blocks:
+                    continue
                 connectionStrings.append(
                     f"{blockIndexes[n.source.uuid]+1},{blockIndexes[n.target.uuid]+1}"
                 )
         string += ";".join(connectionStrings)
-        string = string + "??"  # TODO: Custom build support & sign data support
+
+        string += "?"
+
+        buildingStrings: list[str] = []
+        for building in self.buildings.values():
+            rotation = ",".join(str(v) for v in building.rotation)
+
+            blockUUIDs: list[str] = [block.uuid for block in building._blocks]
+
+            outputConnections: list[list[Block]] = [
+                [] for _ in range(len(building._blocks))
+            ]
+            inputConnections: list[list[Block]] = [
+                [] for _ in range(len(building._blocks))
+            ]
+
+            for block, blockConnections in self.connections.items():
+                for connection in blockConnections:
+                    if connection.source.uuid in blockUUIDs:
+                        buildingBlockIndex = connection.source.index
+                        outputConnections[buildingBlockIndex].append(connection.target)
+                    elif connection.target.uuid in blockUUIDs:
+                        buildingBlockIndex = connection.target.index
+                        inputConnections[buildingBlockIndex].append(connection.source)
+
+            ioStrings: list[str] = []
+            for i in range(len(building._blocks)):
+                # fmt: off
+                outputsStrings = [f"0{blockIndexes[b.uuid]+1}" for b in outputConnections[i]]
+                inputsStrings = [f"1{blockIndexes[b.uuid]+1}" for b in inputConnections[i]]
+                # fmt: on
+                ioStrings.append("+".join(outputsStrings + inputsStrings))
+
+            io = ",".join(ioStrings)
+
+            buildingStrings.append(
+                f"{building.buildingType.value},{building.x},{building.y},{building.z},{rotation},{io}"
+            )
+
+        string += ";".join(buildingStrings)
+        string += "?"
+
+        string += ";".join([building.data for building in self.buildings.values()])
+
         return string
 
     def deleteBlock(self, blockRef: Block) -> None:

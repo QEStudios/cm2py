@@ -226,3 +226,40 @@ def test_addBuilding():
             buildingPos = tuple([randint(-100, 100) for i in range(3)])
 
             building = save.addBuilding(buildingType, buildingPos, cm2.Rotation.NORTH)
+
+
+def test_directlyConnectBuildingBlocks():
+    save = cm2.Save()
+
+    block1 = save.addBlock(cm2.OR, (0, 0, 0))
+    block2 = save.addBlock(cm2.OR, (2, 0, 0))
+
+    building = save.addBuilding(cm2.BuildingType.HUGE_MEMORY, (0, 0, -15), cm2.NORTH)
+
+    for b in building._blocks:
+        if randint(0, 1) == 0:
+            save.addConnection(block1, b)
+            save.addConnection(b, block2)
+        else:
+            save.addConnection(b, block1)
+            save.addConnection(block2, b)
+
+    save.exportSave()
+
+
+def test_multipleBuildings():
+    save = cm2.Save()
+
+    block1 = save.addBlock(cm2.OR, (0, 0, 0))
+
+    buildings = [
+        save.addBuilding(
+            cm2.BuildingType.SIGN,
+            (i * 30, 0, -15),
+            cm2.NORTH,
+            data=f"Sign #{i+1}".encode("ascii").hex(),
+        )
+        for i in range(10)
+    ]
+
+    save.exportSave()
