@@ -263,3 +263,13 @@ def test_multipleBuildings():
     ]
 
     save.exportSave()
+
+
+def test_buildingBlocksPublicInterface():
+    save = cm2.Save()
+
+    building = save.addBuilding(cm2.BuildingType.ASCII_KEY_INPUT, (0, 0, 0), cm2.NORTH)
+
+    assert isinstance(building.blocks.ascii, list)
+    assert isinstance(building.blocks.ascii[0], cm2.BuildingBlock)
+    assert building.blocks.shift == building._blocks[10]

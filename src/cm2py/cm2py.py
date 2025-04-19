@@ -86,6 +86,10 @@ class Connection:
         self.target = target
 
 
+class BlockDir:
+    pass  # Acts as a clean namespace for public block names
+
+
 class Building:
     __initialised = False
 
@@ -120,6 +124,7 @@ class Building:
         self.y = self.pos[1]
         self.z = self.pos[2]
         self.rotation = rotation
+        self.blocks = BlockDir()
         self._blocks = self._generateBlocks()
         self.data = data
         self.uuid = str(uuid4())
@@ -147,15 +152,31 @@ class Building:
 
         blocks = []
 
+        buses = {}
+
         definition = building_definitions.definitions[self.buildingType]
         for i, block in enumerate(definition.blocks):
             pos = block.pos
             IOType = block.ioType
+            attrPath = block.attrPath
             blockObject = BuildingBlock(
                 IOType=IOType, posOffset=pos, parentBuilding=self, index=i
             )
             blocks.append(blockObject)
 
+            if "[" in attrPath:
+                name = attrPath.split("[")[0]
+                index = int(attrPath[attrPath.index("[") + 1 : -1])
+                if name in buses:
+                    buses[name][str(index)] = blockObject
+                else:
+                    buses[name] = {str(index): blockObject}
+            else:
+                setattr(self.blocks, attrPath, blockObject)
+
+        for name, busBlocks in buses.items():
+            bus = [busBlocks[str(i)] for i in range(len(busBlocks))]
+            setattr(self.blocks, name, bus)
         return blocks
 
     @staticmethod
