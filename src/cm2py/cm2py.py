@@ -120,7 +120,7 @@ class Building:
         self.y = self.pos[1]
         self.z = self.pos[2]
         self.rotation = rotation
-        self.blocks = self._generateBlocks()
+        self._blocks = self._generateBlocks()
         self.data = ""
         self.uuid = str(uuid4())
 
@@ -132,7 +132,7 @@ class Building:
             return
 
         assert name != "buildingType", "Building type cannot be changed"
-        assert name != "blocks", "Buildings cannot be re-assigned blocks"
+        assert name not in ["_blocks"], "Buildings cannot be re-assigned blocks"
 
         self.__dict__[name] = value
         if name == "pos":

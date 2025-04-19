@@ -156,7 +156,7 @@ def test_buildingObjectCreation():
             building.buildingType = cm2.BuildingType.TEXT_CONSOLE
 
         with pytest.raises(AssertionError):
-            building.blocks = []
+            building._blocks = []
 
 
 def test_buildingBlockObjectCreation():
@@ -205,7 +205,7 @@ def test_buildingCreatesCorrectBlocks():
 
             buildingDefinition = building_definitions.definitions[buildingType]
 
-            for i, block in enumerate(building.blocks):
+            for i, block in enumerate(building._blocks):
                 definitionBlock = buildingDefinition.blocks[i]
                 assert block.parentBuilding == building
                 assert block.posOffset == definitionBlock[0]
