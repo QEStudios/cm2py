@@ -1,4 +1,5 @@
 from .enums import BuildingType, IOType
+from dataclasses import dataclass
 
 ##### IMPORTANT #####
 # This file contains the information unique to each building.
@@ -10,9 +11,9 @@ from .enums import BuildingType, IOType
 # Circuit Maker 2 savestrings truly are a curious thing.
 
 
+@dataclass
 class BuildingProperties:
-    def __init__(self, blocks: list[tuple[tuple[int, int, int], IOType]]):
-        self.blocks = blocks
+    blocks: list[tuple[tuple[int, int, int], IOType]]
 
 
 definitions = {
