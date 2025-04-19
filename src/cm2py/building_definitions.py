@@ -317,7 +317,7 @@ definitions = {
             BP((2, 0, 7), INPUT, "input[29]"),  # input [bit 29]
             BP((29, 0, 7), INPUT, "input[2]"),  # input [bit 2]
             BP((30, 0, 7), INPUT, "input[1]"),  # input [bit 1]
-            BP((31, 0, 7), INPUT, "input[1]"),  # input [bit 0]
+            BP((31, 0, 7), INPUT, "input[0]"),  # input [bit 0]
             BP((3, 0, 7), INPUT, "input[28]"),  # input [bit 28]
             BP((4, 0, 7), INPUT, "input[27]"),  # input [bit 27]
             BP((5, 0, 7), INPUT, "input[26]"),  # input [bit 26]
