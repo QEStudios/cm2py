@@ -109,10 +109,10 @@ class Building:
         ), "pos must be a 3D tuple of integers or floats"
 
         assert (
-            isinstance(rotation, (list, tuple))
+            isinstance(rotation, tuple)
             and len(rotation) == 9
             and all(isinstance(v, (int, float)) for v in rotation)
-        ), "rotation must be a list of 9 numbers"
+        ), "rotation must be a tuple of 9 int or float values"
 
         self.buildingType = self._normaliseBuildingType(buildingType)
         self.pos = pos
