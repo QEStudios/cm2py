@@ -1,7 +1,7 @@
 import pytest
 
 from src import cm2py as cm2
-from src.cm2py import enums, building_definitions
+from src.cm2py import building_definitions
 from random import randint
 
 
@@ -142,7 +142,7 @@ def test_buildingObjectCreation():
         buildingPos = tuple([randint(-100, 100) for i in range(3)])
 
         building = cm2.Building(
-            enums.BuildingType.MASS_MEMORY, buildingPos, enums.Rotation.NORTH
+            cm2.BuildingType.MASS_MEMORY, buildingPos, cm2.Rotation.NORTH
         )
 
         assert (
@@ -153,7 +153,7 @@ def test_buildingObjectCreation():
         )
 
         with pytest.raises(AssertionError):
-            building.buildingType = enums.BuildingType.TEXT_CONSOLE
+            building.buildingType = cm2.BuildingType.TEXT_CONSOLE
 
         with pytest.raises(AssertionError):
             building.blocks = []
@@ -165,11 +165,11 @@ def test_buildingBlockObjectCreation():
         blockOffset = tuple([randint(-100, 100) for i in range(3)])
 
         building = cm2.Building(
-            enums.BuildingType.MASS_MEMORY, buildingPos, enums.Rotation.NORTH
+            cm2.BuildingType.MASS_MEMORY, buildingPos, cm2.Rotation.NORTH
         )
 
         block = cm2.BuildingBlock(
-            enums.IOType.INPUT,
+            cm2.IOType.INPUT,
             blockOffset,
             parentBuilding=building,
             state=False,
@@ -201,7 +201,7 @@ def test_buildingCreatesCorrectBlocks():
             print(buildingType)
             buildingPos = tuple([randint(-100, 100) for i in range(3)])
 
-            building = cm2.Building(buildingType, buildingPos, enums.Rotation.NORTH)
+            building = cm2.Building(buildingType, buildingPos, cm2.Rotation.NORTH)
 
             buildingDefinition = building_definitions.definitions[buildingType]
 
@@ -225,4 +225,4 @@ def test_addBuilding():
             print(buildingType)
             buildingPos = tuple([randint(-100, 100) for i in range(3)])
 
-            building = save.addBuilding(buildingType, buildingPos, enums.Rotation.NORTH)
+            building = save.addBuilding(buildingType, buildingPos, cm2.Rotation.NORTH)
