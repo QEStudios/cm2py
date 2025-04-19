@@ -24,6 +24,8 @@ from typing import Literal, Callable
 import string
 import struct
 
+Position = tuple[float | int, float | int, float | int]
+
 
 class Block:
     __initialised = False
@@ -31,17 +33,15 @@ class Block:
     def __init__(
         self,
         blockId: int,
-        pos: tuple[float | int, float | int, float | int],
+        pos: Position,
         state: bool = False,
         properties: list | None = None,
     ):
         assert (
             isinstance(pos, tuple)
             and len(pos) == 3
-            and (isinstance(pos[0], (float, int)))
-            and (isinstance(pos[1], (float, int)))
-            and (isinstance(pos[2], (float, int)))
-        ), "pos must be a 3d tuple of integers or floats"
+            and all(isinstance(coord, (int, float)) for coord in pos)
+        ), "pos must be a 3D tuple of integers or floats"
         assert isinstance(state, bool), "state must be a boolean"
         assert (
             isinstance(properties, list) or properties is None
@@ -92,7 +92,7 @@ class Building:
     def __init__(
         self,
         buildingType: enums.BuildingType,
-        pos: tuple[float | int, float | int, float | int],
+        pos: Position,
         # fmt: off
         rotation: tuple[
             float | int, float | int, float | int,
@@ -103,7 +103,7 @@ class Building:
         data: str = "",
     ):
         assert (
-            isinstance(pos, (list, tuple))
+            isinstance(pos, tuple)
             and len(pos) == 3
             and all(isinstance(coord, (int, float)) for coord in pos)
         ), "pos must be a 3D tuple of integers or floats"
@@ -173,10 +173,20 @@ class BuildingBlock(Block):
     def __init__(
         self,
         IOType: enums.IOType,
-        posOffset: tuple[float | int, float | int, float | int],
+        posOffset: Position,
         parentBuilding: Building,
         state: bool = False,
     ):
+        assert isinstance(IOType, enums.IOType)
+        assert (
+            isinstance(posOffset, tuple)
+            and len(posOffset) == 3
+            and all(isinstance(coord, (int, float)) for coord in posOffset)
+        ), "posOffset must be a 3D tuple of integers or floats"
+        assert isinstance(
+            parentBuilding, Building
+        ), "parentBuilding must be of type Building"
+        assert isinstance(state, bool), "state must be a boolean"
         self.parentBuilding = parentBuilding
         self.posOffset = posOffset
         self.IOType = IOType
@@ -227,7 +237,7 @@ class Save:
     def addBlock(
         self,
         blockId: int,
-        pos: tuple[float | int, float | int, float | int],
+        pos: Position,
         state: bool = False,
         properties: list[int | float] | None = None,
         snapToGrid: bool = True,
