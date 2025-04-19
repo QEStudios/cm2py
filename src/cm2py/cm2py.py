@@ -300,13 +300,14 @@ class Save:
             index += 1
 
         string = string[:-1] + "?"
+
+        connectionStrings: list[str] = []
         for c in self.connections.values():
             for n in c:
-                string += (
-                    f"{blockIndexes[n.source.uuid]+1},{blockIndexes[n.target.uuid]+1};"
+                connectionStrings.append(
+                    f"{blockIndexes[n.source.uuid]+1},{blockIndexes[n.target.uuid]+1}"
                 )
-        if self.connectionCount > 0:
-            string = string[:-1]
+        string += ";".join(connectionStrings)
         string = string + "??"  # TODO: Custom build support & sign data support
         return string
 
