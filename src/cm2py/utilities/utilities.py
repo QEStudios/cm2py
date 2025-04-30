@@ -175,6 +175,13 @@ def generateDecoder(
 base64_charset = string.ascii_uppercase + string.ascii_lowercase + string.digits + "+/"
 
 
+def __compress_raw_deflate(data: bytes, level: int = 2) -> bytes:
+    compressor = zlib.compressobj(level=level, wbits=-zlib.MAX_WBITS)
+    compressed = compressor.compress(data)
+    compressed += compressor.flush()
+    return compressed
+
+
 def encodeToMemory(
     data: list[int], memoryType: Literal["mass", "massive", "huge"]
 ) -> str:
@@ -221,12 +228,12 @@ def encodeToMemory(
         temp = []
         for index in data:
             bit1 = index & 0xFF
-            bit2 = index >> 8
+            bit2 = (index >> 8) & 0xFF
             temp.append(bit1)
             temp.append(bit2)
         data = temp
         byte_data = bytes(data)
-        compressed = zlib.compress(byte_data, level=2, wbits=-zlib.MAX_WBITS)
+        compressed = __compress_raw_deflate(byte_data, level=2)
         compressed_b64 = base64.b64encode(compressed)
         code = compressed_b64.decode("utf-8")
         if code.endswith("=="):
