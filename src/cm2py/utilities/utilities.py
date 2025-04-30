@@ -175,7 +175,7 @@ def generateDecoder(
 base64_charset = string.ascii_uppercase + string.ascii_lowercase + string.digits + "+/"
 
 
-def __compress_raw_deflate(data: bytes, level: int = 2) -> bytes:
+def __compressRawDeflate(data: bytes, level: int = 2) -> bytes:
     compressor = zlib.compressobj(level=level, wbits=-zlib.MAX_WBITS)
     compressed = compressor.compress(data)
     compressed += compressor.flush()
