@@ -233,7 +233,7 @@ def encodeToMemory(
             temp.append(bit2)
         data = temp
         byte_data = bytes(data)
-        compressed = __compress_raw_deflate(byte_data, level=2)
+        compressed = __compressRawDeflate(byte_data, level=2)
         compressed_b64 = base64.b64encode(compressed)
         code = compressed_b64.decode("utf-8")
         if code.endswith("=="):
