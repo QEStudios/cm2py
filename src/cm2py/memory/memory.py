@@ -42,6 +42,9 @@ class Memory:
                 self.load(init_data)
             else:
                 self.raw = init_data
+        if len(self.raw) < self.size:
+            self.raw.extend([0] * (self.size - len(self.raw)))
+        
 
     def get(self, index : int) -> int:
         """Get data at an index. Alternatively, use Memory[index]. Negative indexes allowed."""
@@ -67,17 +70,28 @@ class Memory:
             raise NotImplementedError("An encoding function was not specified.")
         return self.__encoder(self.raw)
     
-    def dumpfile(self, file : Union[str, IO[bytes]]) -> None:
-        """Dump memory data to a file or buffer"""
+    def dumpfile(self, file : Union[str, IO[bytes]], n:int=-1) -> None:
+        """Dump memory data to a file or buffer
+        :param int n: Max number of addresses to write. -1 for infinite
+        """
+        if n < 0:
+            n = 2**32
+        i=0
         if isinstance(file, str):
             with open(file, 'wb') as f:
                 for v in self.raw:
                     f.write(v.to_bytes(math.ceil(self.nbits / 8), "little"))
+                    i += 1
+                    if i >= n:
+                        break
         else:
             if file.seekable():
                 file.seek(0)
             for v in self.raw:
                 file.write(v.to_bytes(math.ceil(self.nbits / 8), "little"))
+                i+=1
+                if i >= n:
+                    break
             
 
     def loadfile(self, file : Union[str, IO[bytes]]) -> None:
@@ -91,6 +105,8 @@ class Memory:
                 file.seek(0)
             for i in range(self.size):
                     self.raw[i] = int.from_bytes(file.read(math.ceil(self.nbits / 8)), "little")
+        if len(self.raw) < self.size:
+            self.raw.extend([0] * (self.size - len(self.raw)))
 
     def __getitem__(self, key : Union[str, int]) -> int:
         """Integers and bin strings can be used interchangeably for the index."""
