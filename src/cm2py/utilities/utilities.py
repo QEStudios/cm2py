@@ -172,40 +172,6 @@ def generateDecoder(
 
 base64 = string.ascii_uppercase + string.ascii_lowercase + string.digits + "+/"
 
-
-def encodeToMemory(
-    data: list[int], memoryType: Literal["mass", "massive", "huge"]
-) -> str:
-    """
-    Turns a list of integers into a string that can be pasted into one of the memory buildings.
-    """
-
-    assert memoryType in [
-        "mass",
-        "massive",
-        "huge",
-    ], 'Invalid memory building type. Use "mass", "massive", or "huge"'
-
-    code = ""
-
-    if memoryType == "mass":
-        for v in data:
-            code += format(v % 256, "02x")
-        code += "00" * (4096 - len(data))
-    elif memoryType == "massive":
-        for v in data:
-            code += base64[v & 0x3F]
-            code += base64[(v >> 6) & 0x3F]
-            code += base64[(v >> 12) & 0x3F]
-        code += "AAA" * (4096 - len(data))
-    elif memoryType == "huge":
-        raise (
-            NotImplementedError,
-            "Huge Memory uses full utf8 to represent the values, which don't work well with Roblox yet. When the format gets updated or full utf8 is supported, this function will be updated.",
-        )
-    return code
-
-
 def halfPrecisionBitsToNumber(bits: int) -> float:
     """
     Converts a half-precision floating point number stored in an integer to a python float.
