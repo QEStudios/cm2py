@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cm2py"
 version = "0.3.10"
-authors = [{ name = "SKM GEEK", email = "qestudios17@gmail.com" }]
+authors = [{ name = "SKM GEEK" }]
 description = "Circuit Maker 2 save generation and manipulation package"
 readme = "README.md"
 license = { file = "LICENSE" }
