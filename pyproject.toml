@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cm2py"
-version = "0.3.10"
+version = "0.3.11" 
 authors = [{ name = "SKM GEEK" }]
 description = "Circuit Maker 2 save generation and manipulation package"
 readme = "README.md"
@@ -15,7 +15,7 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
-dependencies = ["uuid", "regex"]
+dependencies = ["regex"]
 
 [project.urls]
 "Homepage" = "https://github.com/QEStudios/cm2py"
